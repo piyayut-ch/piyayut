@@ -34,8 +34,10 @@ website:
       - icon: github
         href: https://github.com/piyayut-ch
       - icon: twitter
-        href: https://twitter.com@PiyayutCh
-      # - icon: rss
+        href: https://twitter.com/piyayutch
+      - icon: linkedin
+        href: https://www.linkedin.com/in/piyayut-chitchumnong/
+        # - icon: rss
         # href: index.xml
 
 format:
