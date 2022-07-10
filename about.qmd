@@ -1,0 +1,44 @@
+---
+title: "Piyayut Chitchumnong"
+image: profile.jpg
+about:
+  template: trestles
+  links:
+    - icon: twitter
+      text: Twitter
+      href: https://twitter.com/piyayutch
+    - icon: linkedin
+      text: LinkedIn
+      href: https://www.linkedin.com/in/piyayut-chitchumnong/
+    - icon: github
+      text: Github
+      href: https://github.com/piyayut-ch
+
+---
+
+Piyayut is an economist, data scientist and data engineer at National Agricultural Center, Office of Agricultural Economics.
+
+
+## Education
+
+**Michigan State University** | East Lansing, MI  
+M.S. Agricultural, Food, and Resource Economics | 2011 - 2015
+
+**Chulalongkorn University** | Bangkok, Thailand  
+M.A in International Economics and Finance | 2010 - 2011
+
+**Thammasat University** | Bangkok, Thailand  
+B.A in Economics | Sep 2007 - June 2011
+
+## Experience
+
+**Office of Agricultural Economics** | Economist | 2015 - present
+
+**Toyota Motor Asia Pacific** | HR Specialist | 2007 - 2010
+
+## Skill
+- **Statistics and Econometrics**: Cross-section Data, Panel Data, Time-series Data 
+- **R**: tidyverse, ggplot2, shiny, rmarkdown, etc.
+- **python**: numpy, scipy, pandas, scikitlearn, keras, etc.
+- **SQL**
+- **Docker**

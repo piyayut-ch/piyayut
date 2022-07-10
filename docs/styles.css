@@ -1,0 +1,14 @@
+/* css styles */
+@import url('https://fonts.googleapis.com/css2?family=Athiti:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@400&display=swap');
+
+
+body{
+/*   font-family: 'Prompt', sans-serif; */
+/*   font-family: 'Bai Jamjuree', sans-serif; */
+  font-family: 'Bai Jamjuree', sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Athiti', sans-serif;
+}

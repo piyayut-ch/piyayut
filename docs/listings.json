@@ -1,0 +1,16 @@
+[
+  {
+    "listing": "/index.html",
+    "items": [
+      "/posts/2022-07-09_quarto-blog/index.html",
+      "/posts/welcome/index.html"
+    ]
+  },
+  {
+    "listing": "/projects.html",
+    "items": [
+      "/projects/mapthai/index.html",
+      "/projects/welcome/index.html"
+    ]
+  }
+]

@@ -1,0 +1,45 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: "Piyayut Chitchumnong"
+  favicon: logo.png
+  search:
+    type: textbox
+  # site-url: https://www.myblogexample.io
+  # description: "A blog about data by Piyayut Chitchumnong"
+  twitter-card:
+    creator: "@PiyayutCh"
+  opengraph: true
+  cookie-consent:
+    type: express
+    style: headline
+    palette: dark
+  google-analytics:
+    tracking-id: "G-XXXXXXX"
+    anonymize-ip: true
+  navbar:
+    right:
+      - text: "Posts"
+        href: index.qmd
+      - text: "Projects"
+        href: projects.qmd
+      - text: "About"
+        href: about.qmd
+      - icon: github
+        href: https://github.com/piyayut-ch
+      - icon: twitter
+        href: https://twitter.com@PiyayutCh
+      # - icon: rss
+        # href: index.xml
+
+format:
+  html:
+    theme: sandstone
+    css: styles.css
+    toc: true
+    code-copy: true
+    code-overflow: wrap
+
+freeze: true
