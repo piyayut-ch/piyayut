@@ -10,7 +10,7 @@ categories: [quarto, tutorial]
 ![](feature.jpg)
 
 # Introduction
-**Quarto** is an open-source software for rendering a plain text file into a veriety of formats (HTML file, MS word, etc.). It can execute code (`python`, `R`, `julia`) which means we can include codes and also their outputs i.e. graph, table, and model results. This is perfect for technical writing. Please see more details about quarto on [Alison Hill's blog](https://www.apreshill.com/blog/2022-04-we-dont-talk-about-quarto/) or the [official website](https://quarto.org/).
+**Quarto** is an open-source software for rendering a plain text file into a variety of formats (HTML file, MS word, etc.). It can execute code (`python`, `R`, `julia`) which means we can include codes and also their outputs i.e. graph, table, and model results. This is perfect for technical writing. Please see more details about quarto on [Alison Hill's blog](https://www.apreshill.com/blog/2022-04-we-dont-talk-about-quarto/) or the [official website](https://quarto.org/).
 
 Quarto can render `.md`(markdown), `.rmd`(Rmarkdown), `.ipynb`(jupyter notebook) file. However, quarto has its own file extension called `.qmd`. Basically, `.qmd` has 2 parts:  
 
