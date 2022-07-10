@@ -4,11 +4,12 @@ project:
 
 website:
   title: "Piyayut Chitchumnong"
+  image: "logo.png"
   favicon: logo.png
   search:
     type: textbox
-  # site-url: https://www.myblogexample.io
-  # description: "A blog about data by Piyayut Chitchumnong"
+  site-url: https://piyayut-ch.github.io/piyayut/
+  description: "A blog about data by Piyayut Chitchumnong"
   twitter-card:
     creator: "@PiyayutCh"
   opengraph: true
@@ -17,8 +18,11 @@ website:
     style: headline
     palette: dark
   google-analytics:
-    tracking-id: "G-XXXXXXX"
+    tracking-id: "G-CE4NX90PD4"
     anonymize-ip: true
+  comments:
+    utterances:
+      repo: piyayut-ch/piyayut
   navbar:
     right:
       - text: "Posts"
@@ -36,7 +40,7 @@ website:
 
 format:
   html:
-    theme: sandstone
+    theme: flatly
     css: styles.css
     toc: true
     code-copy: true

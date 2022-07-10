@@ -8,8 +8,9 @@
 
 <meta name="author" content="Piyayut Chitchumnong">
 <meta name="dcterms.date" content="2022-07-09">
+<meta name="description" content="A quick tutorial on how to create a personal blog using quarto.">
 
-<title>Piyayut Chitchumnong - Create a personal blog using Quarto</title>
+<title>Piyayut Chitchumnong - How to create a personal blog using Quarto</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -121,14 +122,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     "search-submit-button-title": "Submit"
   }
 }</script>
-<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXX"></script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-CE4NX90PD4"></script>
 
 <script type="text/plain" cookie-consent="tracking">
 
 window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
-gtag('config', 'G-XXXXXXX', { 'anonymize_ip': true});
+gtag('config', 'G-CE4NX90PD4', { 'anonymize_ip': true});
 </script>
 
 <script type="text/javascript" charset="UTF-8">
@@ -149,10 +150,11 @@ cookieconsent.run({
 
 
 <link rel="stylesheet" href="../../styles.css">
-<meta name="twitter:title" content="Piyayut Chitchumnong - Create a personal blog using Quarto">
-<meta name="twitter:description" content="Quarto is an open-source software for rendering a plain text file into a veriety of formats (HTML file, MS word, etc.).">
+<meta name="twitter:title" content="Piyayut Chitchumnong - How to create a personal blog using Quarto">
+<meta name="twitter:description" content="A quick tutorial on how to create a personal blog using quarto.">
+<meta name="twitter:image" content="https://piyayut-ch.github.io/piyayut/posts\2022-07-09_quarto-blog\feature.jpg">
 <meta name="twitter:creator" content="@PiyayutCh">
-<meta name="twitter:card" content="summary">
+<meta name="twitter:card" content="summary_large_image">
 </head>
 
 <body class="nav-fixed">
@@ -195,7 +197,43 @@ cookieconsent.run({
     </nav>
 </header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">How to create a personal blog using Quarto</h1>
+                  <div>
+        <div class="description">
+          <p>A quick tutorial on how to create a personal blog using quarto.</p>
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">quarto</div>
+                <div class="quarto-category">tutorial</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Piyayut Chitchumnong </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">July 9, 2022</p>
+      </div>
+    </div>
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
@@ -213,174 +251,238 @@ cookieconsent.run({
   <li><a href="#edit-about.qmd" id="toc-edit-about.qmd" class="nav-link" data-scroll-target="#edit-about.qmd">Edit <code>about.qmd</code></a></li>
   <li><a href="#edit-_metadata.yml" id="toc-edit-_metadata.yml" class="nav-link" data-scroll-target="#edit-_metadata.yml">Edit <code>_metadata.yml</code></a></li>
   </ul></li>
-  <li><a href="#workflow" id="toc-workflow" class="nav-link" data-scroll-target="#workflow">Workflow</a>
+  <li><a href="#standard-workflow" id="toc-standard-workflow" class="nav-link" data-scroll-target="#standard-workflow">Standard workflow</a>
   <ul class="collapse">
-  <li><a href="#preview" id="toc-preview" class="nav-link" data-scroll-target="#preview">Preview</a></li>
+  <li><a href="#activate-preview-mode" id="toc-activate-preview-mode" class="nav-link" data-scroll-target="#activate-preview-mode">Activate preview mode</a></li>
   <li><a href="#create-a-blog-post" id="toc-create-a-blog-post" class="nav-link" data-scroll-target="#create-a-blog-post">Create a blog post</a></li>
-  <li><a href="#create-new-page" id="toc-create-new-page" class="nav-link" data-scroll-target="#create-new-page">Create new page</a></li>
+  </ul></li>
+  <li><a href="#polishing-the-blog" id="toc-polishing-the-blog" class="nav-link" data-scroll-target="#polishing-the-blog">Polishing the blog</a>
+  <ul class="collapse">
+  <li><a href="#edit-css-and-theme" id="toc-edit-css-and-theme" class="nav-link" data-scroll-target="#edit-css-and-theme">Edit css and theme</a></li>
+  <li><a href="#create-new-listing-page" id="toc-create-new-listing-page" class="nav-link" data-scroll-target="#create-new-listing-page">Create new listing page</a></li>
+  <li><a href="#add-comments" id="toc-add-comments" class="nav-link" data-scroll-target="#add-comments">Add comments</a></li>
   </ul></li>
   <li><a href="#publishing" id="toc-publishing" class="nav-link" data-scroll-target="#publishing">Publishing</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
-
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">Create a personal blog using Quarto</h1>
-  <div class="quarto-categories">
-    <div class="quarto-category">quarto</div>
-  </div>
-  </div>
+<main class="content quarto-banner-title-block" id="quarto-document-content">
 
 
 
-<div class="quarto-title-meta">
 
-    <div>
-    <div class="quarto-title-meta-heading">Author</div>
-    <div class="quarto-title-meta-contents">
-             <p>Piyayut Chitchumnong </p>
-          </div>
-  </div>
-    
-    <div>
-    <div class="quarto-title-meta-heading">Published</div>
-    <div class="quarto-title-meta-contents">
-      <p class="date">July 9, 2022</p>
-    </div>
-  </div>
-    
-  </div>
-  
-
-</header>
-
+<p><img src="feature.jpg" class="img-fluid"></p>
 <section id="introduction" class="level1">
 <h1>Introduction</h1>
-<p>Quarto is an open-source software for rendering a plain text file into a veriety of formats (HTML file, MS word, etc.). It can execute code (python, R, julia) which means we can include code and also the output i.e.&nbsp;graph, table, and model results. This is perfect for technical writing. Please see more details on <a href="https://www.apreshill.com/blog/2022-04-we-dont-talk-about-quarto/">Alison Hill’s blog</a> or the <a href="https://quarto.org/">official website</a>.</p>
-<p>Like <a href="https://rmarkdown.rstudio.com/">Rmarkdown</a>, we can use Quarto to generate a website, blog or a book. In this post, I summarize minimal steps and workflow are needed to turn Quarto into a personal blog.</p>
-<p>quarto has a file name <code>.qmd</code></p>
+<p><strong>Quarto</strong> is an open-source software for rendering a plain text file into a veriety of formats (HTML file, MS word, etc.). It can execute code (<code>python</code>, <code>R</code>, <code>julia</code>) which means we can include codes and also their outputs i.e.&nbsp;graph, table, and model results. This is perfect for technical writing. Please see more details about quarto on <a href="https://www.apreshill.com/blog/2022-04-we-dont-talk-about-quarto/">Alison Hill’s blog</a> or the <a href="https://quarto.org/">official website</a>.</p>
+<p>Quarto can render <code>.md</code>(markdown), <code>.rmd</code>(Rmarkdown), <code>.ipynb</code>(jupyter notebook) file. However, quarto has its own file extension called <code>.qmd</code>. Basically, <code>.qmd</code> has 2 parts:</p>
+<ul>
+<li><strong>metadata</strong>: yml format defined at the top of document to customize <code>.qmd</code> result</li>
+<li><strong>body</strong>: markdown for text rendering and code chunk for code execution</li>
+</ul>
+<p>This is similar to <code>.rmd</code> with slightly different syntax.</p>
+<p>Like <a href="https://rmarkdown.rstudio.com/">Rmarkdown</a>, we can use quarto to generate a website, blog or book. In this post, I summarize minimum steps for make a personal blog up and running. However, there are also other resources you should check out i.e.&nbsp;<a href="https://beamilz.com/posts/2022-06-05-creating-a-blog-with-quarto/en/">Beatriz Milz’s blog</a>.</p>
 </section>
 <section id="initial-setup" class="level1">
 <h1>Initial Setup</h1>
 <section id="install-quarto" class="level2">
 <h2 class="anchored" data-anchor-id="install-quarto">Install quarto</h2>
-<p>Download the installer from this <a href="https://quarto.org/docs/get-started">link</a>. Then it should be straightforward to install. Then select your editor tools i.e.&nbsp;<a href="https://quarto.org/docs/get-started/hello/vscode.html">VSCode</a> or <a href="https://quarto.org/docs/get-started/hello/jupyter.html">Jupyter</a> or <a href="https://quarto.org/docs/get-started/hello/rstudio.html">Rstudio</a></p>
+<p>Download the installer from this <a href="https://quarto.org/docs/get-started">link</a> and install the program. Next select your editor tools i.e.&nbsp;<a href="https://quarto.org/docs/get-started/hello/vscode.html">VSCode</a> or <a href="https://quarto.org/docs/get-started/hello/jupyter.html">Jupyter</a> or <a href="https://quarto.org/docs/get-started/hello/rstudio.html">Rstudio</a>. In this tutorial, I use <a href="https://code.visualstudio.com/">VScode</a>. For user who use other tools, you still can follow this tutorial, just to be careful about the path.</p>
 </section>
 <section id="create-new-project" class="level2">
 <h2 class="anchored" data-anchor-id="create-new-project">Create new project</h2>
-<p>create a project using bash command.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> create-project myblog <span class="at">--type</span> website:blog</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Note argument <code>--type website:blog</code> is used to create a folder with necessary files for a blog website. We will go and edit one by one.</p>
+<ul>
+<li>Create a new folder for your project and rename as you will.</li>
+<li>Go to the folder and open VScode.</li>
+<li>Open Extension and install Quarto extension. This extension will help us working with quarto i.e.&nbsp;syntax highligh, execution buttons, etc.</li>
+<li>Open new terminal, and create a new project using quarto command as follows</li>
+</ul>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> create-project <span class="at">--type</span> website:blog</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Note:</p>
+<ul>
+<li>the command is slightly different the official document where we do not specify folder name since we are already in the folder.</li>
+<li>argument <code>--type website:blog</code> is used to create a folder with necessary files for a blog website. We will go and edit one by one.</li>
+</ul>
+<p>Important files are:</p>
 <ul>
 <li><code>_quarto.yml</code> a config for whole website i.e.&nbsp;title, format, navbar</li>
 <li><code>index.qml</code> landing page.<br>
 </li>
 <li><code>about.qml</code> about page.<br>
 </li>
-<li><code>post</code> a folder post contains all posts.<br>
+<li><code>styles.css</code> a css file for styling the website.<br>
 </li>
+<li><code>post</code> a folder post contains all posts.
+<ul>
 <li><code>_metadata.yml</code> a metadata used for all posts.</li>
+</ul></li>
 </ul>
 <p>Preview the blog using bash command</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> myblog preview</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># make sure that you are in the project root folder</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> preview</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="edit-_quarto.yml" class="level2">
 <h2 class="anchored" data-anchor-id="edit-_quarto.yml">Edit <code>_quarto.yml</code></h2>
-<p><code>_quarto.yml</code> is a yml config file for overall blog behavior. The defaults config is sufficient, but you can further customize and add functionality of your blog i.e.&nbsp;favicon, select search mode, customize navbar, add google analytics, etc. For greater details, please see official documents</p>
+<p><code>_quarto.yml</code> is a yml config file for overall blog’s behavior. The defaults config is sufficient, but you can further customize and add functionalities of your blog i.e.&nbsp;add favicon, select search mode, customize navbar, add google analytics, etc. For greater details, please see official documents</p>
 <ul>
 <li><a href="https://quarto.org/docs/websites/website-tools.html">https://quarto.org/docs/websites/website-tools.html</a><br>
 </li>
 <li><a href="https://quarto.org/docs/websites/website-search.html">https://quarto.org/docs/websites/website-search.html</a></li>
 </ul>
-<div class="sourceCode" id="cb3"><pre class="sourceCode yml code-with-copy"><code class="sourceCode yaml"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># example</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">project</span><span class="kw">:</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">type</span><span class="kw">:</span><span class="at"> website</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">website</span><span class="kw">:</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">title</span><span class="kw">:</span><span class="at"> &lt;TITLE&gt;</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">favicon</span><span class="kw">:</span><span class="at"> &lt;PATH TO FILE&gt;</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">search</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">navbar</span><span class="kw">:</span></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">right</span><span class="kw">:</span></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">text</span><span class="kw">:</span><span class="at"> </span><span class="st">"About"</span></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">href</span><span class="kw">:</span><span class="at"> about.qmd</span></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">icon</span><span class="kw">:</span><span class="at"> github</span></span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">href</span><span class="kw">:</span><span class="at"> &lt;LINK&gt;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode yml code-with-copy"><code class="sourceCode yaml"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _quarto.yml</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># the rest metadata is suppressed for brevity</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">project</span><span class="kw">:</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">type</span><span class="kw">:</span><span class="at"> website</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="fu">website</span><span class="kw">:</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">title</span><span class="kw">:</span><span class="at"> &lt;TITLE&gt;</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">favicon</span><span class="kw">:</span><span class="at"> &lt;PATH TO FILE&gt;</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">search</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">navbar</span><span class="kw">:</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">right</span><span class="kw">:</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">text</span><span class="kw">:</span><span class="at"> </span><span class="st">"About"</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">href</span><span class="kw">:</span><span class="at"> about.qmd</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">icon</span><span class="kw">:</span><span class="at"> github</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">href</span><span class="kw">:</span><span class="at"> &lt;LINK&gt;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="edit-index.qmd" class="level2">
 <h2 class="anchored" data-anchor-id="edit-index.qmd">Edit <code>index.qmd</code></h2>
-<p><code>index.qmd</code> file at the root of project is a landing page for all blog posts. Basically it is a document or .qmd file with only metadata and no content. Please see <a href="https://quarto.org/docs/websites/website-listings.html">link</a> for more details</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">---</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"># example of index.qmd</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="ex">title:</span> <span class="op">&lt;</span>TITLE<span class="op">&gt;</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="ex">listing:</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="ex">contents:</span> posts</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="ex">sort:</span> <span class="st">"date desc"</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="ex">type:</span> default</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="ex">categories:</span> true</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="ex">sort-ui:</span> false</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="ex">filter-ui:</span> false</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="ex">page-layout:</span> full</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="ex">title-block-banner:</span> true</span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="ex">---</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><code>index.qmd</code> file located at the root of project is a landing page for all blog posts. Basically, it is a <code>.qmd</code> file with only metadata and no content. Please see <a href="https://quarto.org/docs/websites/website-listings.html">link</a> for more details.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode yml code-with-copy"><code class="sourceCode yaml"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"># index.qmd</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># the rest metadata is suppressed for brevity</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span><span class="kw">:</span><span class="at"> &lt;TITLE&gt;</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">listing</span><span class="kw">:</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">contents</span><span class="kw">:</span><span class="at"> posts</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">sort</span><span class="kw">:</span><span class="at"> </span><span class="st">"date desc"</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">type</span><span class="kw">:</span><span class="at"> default</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">categories</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">sort-ui</span><span class="kw">:</span><span class="at"> </span><span class="ch">false</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">filter-ui</span><span class="kw">:</span><span class="at"> </span><span class="ch">false</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="fu">page-layout</span><span class="kw">:</span><span class="at"> full</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="fu">title-block-banner</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="edit-about.qmd" class="level2">
 <h2 class="anchored" data-anchor-id="edit-about.qmd">Edit <code>about.qmd</code></h2>
-<p><code>about.qmd</code> is a file for simple about page. We can change title, image, template social media link in metadata section. I suggest to put the image file in the same folder as .qmd file in this case is root of project. For template, there are 5 options to choose from jolla, trestles, solana, marquee, broadside. Choose one you like. Next edit your social media information i.e.&nbsp;twitter account, linkedin or github.</p>
+<p><code>about.qmd</code> is a <code>.qmd</code> for simple about page. We can change title, image, template social media link in metadata section. In general, I recommend to put the image file in the same folder as <code>.qmd</code> file in this case is the project’s root. For template, there are 5 options to choose from which are jolla, trestles, solana, marquee, broadside. Choose the one you like. Next edit your social media information i.e.&nbsp;twitter account, linkedin or github.</p>
 <p>The body of about page i.e.&nbsp;desicription, education, work experience, skill, etc. can be edited as normal markdown file. See the <a href="https://quarto.org/docs/websites/website-about.html">official document</a> for more details.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># example</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="ex">---</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="ex">title:</span> <span class="op">&lt;</span>TITLE<span class="op">&gt;</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="ex">about:</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="ex">template:</span> jolla <span class="co"># jolla trestles, solana, marquee, broadside </span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="ex">image:</span> profile.jpg</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="ex">links:</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="ex">-</span> icon: twitter</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>      <span class="ex">text:</span> twitter</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>      <span class="ex">href:</span> https://twitter.com</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="ex">-</span> icon: github</span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>      <span class="ex">text:</span> Github</span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>      <span class="ex">href:</span> https://github.com</span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="ex">---</span></span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="ex">Put</span> all information as you need</span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="co">## Education</span></span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a><span class="co">## Work Experience</span></span>
+<div class="sourceCode" id="cb5"><pre class="sourceCode yml code-with-copy"><code class="sourceCode yaml"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># about.qmd</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># the rest metadata is suppressed for brevity</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span><span class="kw">:</span><span class="at"> &lt;TITLE&gt;</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">about</span><span class="kw">:</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">template</span><span class="kw">:</span><span class="at"> jolla</span><span class="co"> # jolla trestles, solana, marquee, broadside </span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">image</span><span class="kw">:</span><span class="at"> profile.jpg</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">links</span><span class="kw">:</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">icon</span><span class="kw">:</span><span class="at"> twitter</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">text</span><span class="kw">:</span><span class="at"> twitter</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">href</span><span class="kw">:</span><span class="at"> https://twitter.com</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">icon</span><span class="kw">:</span><span class="at"> github</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">text</span><span class="kw">:</span><span class="at"> Github</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">href</span><span class="kw">:</span><span class="at"> https://github.com</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="at">Put all information as you need ...</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="co">## Education</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a><span class="co">...</span></span>
 <span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a><span class="co">## Skill</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a><span class="co">## Work Experience</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a><span class="co">...</span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a><span class="co">## Skill</span></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a><span class="co">...</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="edit-_metadata.yml" class="level2">
 <h2 class="anchored" data-anchor-id="edit-_metadata.yml">Edit <code>_metadata.yml</code></h2>
-<p><code>._metadata.yml</code> is yml file that will be used in every <code>.qmd</code> files under the same folder. This will be a good place to set global or common metadata. My personal preference is to set <code>title-block-banner: false</code>.</p>
+<p><code>._metadata.yml</code> is a yml file that will be used in every <code>.qmd</code> files under the same folder. This will be a good place to set global or common parameters in metadata section.</p>
 </section>
 </section>
-<section id="workflow" class="level1">
-<h1>Workflow</h1>
-<section id="preview" class="level2">
-<h2 class="anchored" data-anchor-id="preview">Preview</h2>
-<p>we can preview our entile blog by running quarto cli command.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> <span class="op">&lt;</span>FOLDER<span class="op">&gt;</span> preview</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>I suggest to run this command when we resume working on the project. This is good for interactive purpose as quarto will rerender once you save the file and we can see the result in the browser. However, when it is ready for publish, you should use another commmand.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> <span class="op">&lt;</span>FOLDER<span class="op">&gt;</span> render</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="standard-workflow" class="level1">
+<h1>Standard workflow</h1>
+<section id="activate-preview-mode" class="level2">
+<h2 class="anchored" data-anchor-id="activate-preview-mode">Activate preview mode</h2>
+<p>we can preview our entire blog by running quarto cli command.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> preview</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>I recommend to run this command when we working on the project. This is good for interactive purpose as quarto will re-render every time you save a file and we can see the changes thruogh the browser. However, when we finish editing, we need to render before publishg the website as discussed later.</p>
 </section>
 <section id="create-a-blog-post" class="level2">
 <h2 class="anchored" data-anchor-id="create-a-blog-post">Create a blog post</h2>
 <p>To add a new post</p>
 <ul>
-<li>Create a folder in</li>
-<li></li>
+<li>Create a folder under the posts folder. I recommend to use a date time slug followed by a breif description.<br>
+</li>
+<li>Create a filename <code>index.qmd</code>. Note other formats <code>.md</code>, <code>.rmd</code>, <code>.ipynb</code> should work also.<br>
+</li>
+<li>Edit <code>index.qmd</code> both metadata and body.</li>
+</ul>
+<div class="sourceCode" id="cb7"><pre class="sourceCode yml code-with-copy"><code class="sourceCode yaml"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># a .qmd file: metadata</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># the rest metadata is suppressed for brevity</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span><span class="kw">:</span><span class="at"> </span><span class="st">"How to create a personal blog using Quarto"</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="fu">author</span><span class="kw">:</span><span class="at"> </span><span class="st">"Piyayut Chitchumnong"</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="fu">description</span><span class="kw">: </span><span class="ch">|</span><span class="at"> </span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  A quick tutorial on how to create a personal blog using quarto.</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="fu">date</span><span class="kw">:</span><span class="at"> </span><span class="st">"2022-07-09"</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="fu">categories</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">quarto</span><span class="kw">,</span><span class="at"> tutorial</span><span class="kw">]</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>It is a good practice for having a cover picture. We can accomplish this by
+<ul>
+<li>put an image file in the same folder of the post.</li>
+<li>rename the image as feature.png or feature.jpg.</li>
+<li>use <code>![](&lt;FILENAME&gt;)</code> in the top of body section</li>
+</ul></li>
 </ul>
 </section>
-<section id="create-new-page" class="level2">
-<h2 class="anchored" data-anchor-id="create-new-page">Create new page</h2>
+</section>
+<section id="polishing-the-blog" class="level1">
+<h1>Polishing the blog</h1>
+<section id="edit-css-and-theme" class="level2">
+<h2 class="anchored" data-anchor-id="edit-css-and-theme">Edit css and theme</h2>
+<p>When the project was initialized, default <code>theme</code> is cosmo and <code>css</code> used is <code>styles.css</code> which is a blank css file. We can adjust our blog’s look and feel by changing <code>theme</code> and edit <code>styles.css</code>.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode yml code-with-copy"><code class="sourceCode yaml"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># default _quarto.yml</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"># the rest metadata is suppressed for brevity</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="fu">format</span><span class="kw">:</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">html</span><span class="kw">:</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">theme</span><span class="kw">:</span><span class="at"> cosmo</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">css</span><span class="kw">:</span><span class="at"> styles.css</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li><strong>theme</strong>: There are 25 built-in theme. Please see <a href="https://bootswatch.com/">bootswatch</a> for preview. We can change them by editing <code>_quarto.yml</code></li>
+</ul>
+<div class="sourceCode" id="cb9"><pre class="sourceCode yml code-with-copy"><code class="sourceCode yaml"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _quarto.yml</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># the rest metadata is suppressed for brevity</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="fu">format</span><span class="kw">:</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">html</span><span class="kw">:</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">theme</span><span class="kw">:</span><span class="at"> sandstone</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">css</span><span class="kw">:</span><span class="at"> styles.css</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li><strong>css</strong>: For advance <code>css</code> users, the blog’s look can be further fine-tune by editting <code>styles.css</code> file. One common way to use <code>css</code> is to use custom fonts. In this case, I use google font that support Thai fonts. The file <code>styles.css</code> is editted as follows</li>
+</ul>
+<div class="sourceCode" id="cb10"><pre class="sourceCode css code-with-copy"><code class="sourceCode css"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* editted styles.css */</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="im">@import</span> <span class="fu">url(</span><span class="st">'https://fonts.googleapis.com/css2?family=Athiti:wght@700&amp;display=swap'</span><span class="fu">)</span><span class="op">;</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="im">@import</span> <span class="fu">url(</span><span class="st">'https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@400&amp;display=swap'</span><span class="fu">)</span><span class="op">;</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>body{</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="kw">font-family</span>: <span class="st">'Bai Jamjuree'</span><span class="op">,</span> <span class="dv">sans-serif</span><span class="op">;</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>h1<span class="op">,</span> h2<span class="op">,</span> h3<span class="op">,</span> h4<span class="op">,</span> h5<span class="op">,</span> h6 {</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  <span class="kw">font-family</span>: <span class="st">'Athiti'</span><span class="op">,</span> <span class="dv">sans-serif</span><span class="op">;</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="create-new-listing-page" class="level2">
+<h2 class="anchored" data-anchor-id="create-new-listing-page">Create new listing page</h2>
 <p>The default gives you two pages: blog listing page and about page. However, you can add new page i.e.&nbsp;projects or talk page by following:</p>
 <ul>
-<li>Create a new folder at the root i.e.&nbsp;projects<br>
+<li>Create a new folder at the root i.e.&nbsp;projects or talks<br>
 </li>
 <li>Create a new <code>.qmd</code> file i.e.&nbsp;<code>projects.qmd</code><br>
 </li>
@@ -388,29 +490,67 @@ cookieconsent.run({
 </li>
 <li>Edit <code>_quarto.yml</code> to include the new page in navbar.<br>
 </li>
-<li>Create new project using <code>.qmd</code> file under the new folder. Similar to create a post.</li>
 </ul>
-<div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># suppress the rest metadata for brevity</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="ex">navbar:</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="ex">right:</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>      <span class="ex">-</span> text: <span class="st">"Projects"</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>        <span class="ex">href:</span> projects.qmd</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode yml code-with-copy"><code class="sourceCode yaml"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _quarto.yml</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co"># the rest metadata is suppressed for brevity</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">website</span><span class="kw">:</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">navbar</span><span class="kw">:</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">right</span><span class="kw">:</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">text</span><span class="kw">:</span><span class="at"> </span><span class="st">"Projects"</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">href</span><span class="kw">:</span><span class="at"> projects.qmd</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>Create a new post (subfolder) for each project using <code>.qmd</code> file under the new folder. Similar way to create a post.</li>
+</ul>
+</section>
+<section id="add-comments" class="level2">
+<h2 class="anchored" data-anchor-id="add-comments">Add comments</h2>
+<p>We can allow reader to comment or share their thoughts on our blog. There are 3 methods supported by quarto: <code>Hypothes.is</code>, <code>Utterances</code> and <code>Giscus</code>. We adopt <code>utterances</code> due to its simplicity. We just need a github repo. To activate comment widget, we edit <code>_quarto.yml</code> by adding our github repo as example below. The github repo is simply used as a storage of user comments in issues section. See <a href="https://quarto.org/docs/output-formats/html-basics.html#commenting">link</a> for more details of all three methods.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode yml code-with-copy"><code class="sourceCode yaml"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _quarto.yml</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co"># the rest metadata is suppressed for brevity</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">website</span><span class="kw">:</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">comments</span><span class="kw">:</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">utterances</span><span class="kw">:</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">repo</span><span class="kw">:</span><span class="at"> &lt;github-repo&gt;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 </section>
 <section id="publishing" class="level1">
 <h1>Publishing</h1>
-<p>There are many options for hosting a blog as described in the <a href="https://quarto.org/docs/websites/publishing-websites.html">official document</a>. We use GitHub Pages approach.</p>
+<p>There are many options for hosting a blog as described in the <a href="https://quarto.org/docs/websites/publishing-websites.html">official document</a>. We select GitHub Pages approach same as this blog.</p>
 <ul>
-<li>render</li>
+<li>edit <code>_quarto.yml</code></li>
+</ul>
+<div class="sourceCode" id="cb13"><pre class="sourceCode yml code-with-copy"><code class="sourceCode yaml"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _quarto.yml</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co"># the rest metadata is suppressed for brevity</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="fu">project</span><span class="kw">:</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">type</span><span class="kw">:</span><span class="at"> website</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">output-dir</span><span class="kw">:</span><span class="at"> docs</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>render the project</li>
+</ul>
+<div class="sourceCode" id="cb14"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># make sure that the working directory is at the project root folder.</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> render</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
 <li>create .nojekyll</li>
 </ul>
-<div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># windows</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="ex">ni</span> .nojekyll</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co"># mac or linux</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="fu">touch</span> .nojekyll</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># windows</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="ex">ni</span> .nojekyll</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="co"># mac or linux</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="fu">touch</span> .nojekyll</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <ul>
-<li>asd</li>
+<li><p>create a github repo and publish/push the project</p></li>
+<li><p>edit github setting</p>
+<ul>
+<li>go to the github repo.</li>
+<li>select setting tab.</li>
+<li>select Pages sidebar menu.</li>
+<li>at source section, select branch: main and folder: docs</li>
+<li>click save.</li>
+</ul></li>
 </ul>
+</section>
+<section id="conclusion" class="level1">
+<h1>Conclusion</h1>
+<p>I hope this post help you create your personal or organizational blog using quarto. However, to master <code>quarto</code> need practices and the official document is an excellent resource. There are other topics not convered here. For example how to write <code>.qmd</code> file, how to custom computation chunk, how to render in varios formats. Please read the <a href="https://quarto.org/">official documents</a> and <a href="https://github.com/quarto-dev/quarto-web">github repo of quarto website</a>.</p>
 
 
 </section>
@@ -494,6 +634,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     });
   }
 });
+</script>
+<script src="https://utteranc.es/client.js" repo="piyayut-ch/piyayut" issue-term="pathname" theme="github-light" crossorigin="anonymous" async="">
 </script>
 </div> <!-- /content -->
 <footer class="footer">

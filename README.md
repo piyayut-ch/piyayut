@@ -1,2 +1,2 @@
 # piyayut
- My personal blog powered by quarto.
+My personal blog about data and coding powered by quarto.

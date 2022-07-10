@@ -1,8 +1,13 @@
 ---
 title: "Mapthai"
 author: "Piyayut Chitchumnong"
+description: |
+  R package providing map polygon of Thailand.
 date: "2022-07-09"
 categories: ["R package", "map"]
 ---
 
-Mapthai
+![](feature.png)
+
+mapthai package
+[link](https://github.com/piyayut-ch/mapthai)

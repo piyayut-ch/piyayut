@@ -32,104 +32,97 @@
     "href": "index.html",
     "title": "Piyayut’s Blog",
     "section": "",
-    "text": "quarto\n\n\n\n\n\n\n\n\n\n\n\nJul 9, 2022\n\n\nPiyayut Chitchumnong\n\n\n\n\n\n\n  \n\n\n\n\n\n\n\n\n\n\nnews\n\n\n\n\n\n\n\n\n\n\n\nJul 6, 2022\n\n\nTristan O’Malley\n\n\n\n\n\n\nNo matching items"
-  },
-  {
-    "objectID": "posts/2022-07-09_quarto-blog/index.html",
-    "href": "posts/2022-07-09_quarto-blog/index.html",
-    "title": "Create a personal blog using Quarto",
-    "section": "",
-    "text": "Quarto is an open-source software for rendering a plain text file into a veriety of formats (HTML file, MS word, etc.). It can execute code (python, R, julia) which means we can include code and also the output i.e. graph, table, and model results. This is perfect for technical writing. Please see more details on Alison Hill’s blog or the official website.\nLike Rmarkdown, we can use Quarto to generate a website, blog or a book. In this post, I summarize minimal steps and workflow are needed to turn Quarto into a personal blog.\nquarto has a file name .qmd"
+    "text": "quarto\n\n\ntutorial\n\n\n\n\nA quick tutorial on how to create a personal blog using quarto.\n\n\n\n\n\n\nJul 9, 2022\n\n\nPiyayut Chitchumnong\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "posts/2022-07-09_quarto-blog/index.html#install-quarto",
     "href": "posts/2022-07-09_quarto-blog/index.html#install-quarto",
-    "title": "Create a personal blog using Quarto",
+    "title": "How to create a personal blog using Quarto",
     "section": "Install quarto",
-    "text": "Install quarto\nDownload the installer from this link. Then it should be straightforward to install. Then select your editor tools i.e. VSCode or Jupyter or Rstudio"
+    "text": "Install quarto\nDownload the installer from this link and install the program. Next select your editor tools i.e. VSCode or Jupyter or Rstudio. In this tutorial, I use VScode. For user who use other tools, you still can follow this tutorial, just to be careful about the path."
   },
   {
     "objectID": "posts/2022-07-09_quarto-blog/index.html#create-new-project",
     "href": "posts/2022-07-09_quarto-blog/index.html#create-new-project",
-    "title": "Create a personal blog using Quarto",
+    "title": "How to create a personal blog using Quarto",
     "section": "Create new project",
-    "text": "Create new project\ncreate a project using bash command.\nquarto create-project myblog --type website:blog\nNote argument --type website:blog is used to create a folder with necessary files for a blog website. We will go and edit one by one.\n\n_quarto.yml a config for whole website i.e. title, format, navbar\nindex.qml landing page.\n\nabout.qml about page.\n\npost a folder post contains all posts.\n\n_metadata.yml a metadata used for all posts.\n\nPreview the blog using bash command\nquarto myblog preview"
+    "text": "Create new project\n\nCreate a new folder for your project and rename as you will.\nGo to the folder and open VScode.\nOpen Extension and install Quarto extension. This extension will help us working with quarto i.e. syntax highligh, execution buttons, etc.\nOpen new terminal, and create a new project using quarto command as follows\n\nquarto create-project --type website:blog\nNote:\n\nthe command is slightly different the official document where we do not specify folder name since we are already in the folder.\nargument --type website:blog is used to create a folder with necessary files for a blog website. We will go and edit one by one.\n\nImportant files are:\n\n_quarto.yml a config for whole website i.e. title, format, navbar\nindex.qml landing page.\n\nabout.qml about page.\n\nstyles.css a css file for styling the website.\n\npost a folder post contains all posts.\n\n_metadata.yml a metadata used for all posts.\n\n\nPreview the blog using bash command\n# make sure that you are in the project root folder\nquarto preview"
   },
   {
     "objectID": "posts/2022-07-09_quarto-blog/index.html#edit-_quarto.yml",
     "href": "posts/2022-07-09_quarto-blog/index.html#edit-_quarto.yml",
-    "title": "Create a personal blog using Quarto",
+    "title": "How to create a personal blog using Quarto",
     "section": "Edit _quarto.yml",
-    "text": "Edit _quarto.yml\n_quarto.yml is a yml config file for overall blog behavior. The defaults config is sufficient, but you can further customize and add functionality of your blog i.e. favicon, select search mode, customize navbar, add google analytics, etc. For greater details, please see official documents\n\nhttps://quarto.org/docs/websites/website-tools.html\n\nhttps://quarto.org/docs/websites/website-search.html\n\n# example\nproject:\n  type: website\n\nwebsite:\n  title: <TITLE>\n  favicon: <PATH TO FILE>\n  search: true\n  navbar:\n    right:\n      - text: \"About\"\n        href: about.qmd\n      - icon: github\n        href: <LINK>"
+    "text": "Edit _quarto.yml\n_quarto.yml is a yml config file for overall blog’s behavior. The defaults config is sufficient, but you can further customize and add functionalities of your blog i.e. add favicon, select search mode, customize navbar, add google analytics, etc. For greater details, please see official documents\n\nhttps://quarto.org/docs/websites/website-tools.html\n\nhttps://quarto.org/docs/websites/website-search.html\n\n# _quarto.yml\n# the rest metadata is suppressed for brevity\nproject:\n  type: website\n\nwebsite:\n  title: <TITLE>\n  favicon: <PATH TO FILE>\n  search: true\n  navbar:\n    right:\n      - text: \"About\"\n        href: about.qmd\n      - icon: github\n        href: <LINK>"
   },
   {
     "objectID": "posts/2022-07-09_quarto-blog/index.html#edit-index.qmd",
     "href": "posts/2022-07-09_quarto-blog/index.html#edit-index.qmd",
-    "title": "Create a personal blog using Quarto",
+    "title": "How to create a personal blog using Quarto",
     "section": "Edit index.qmd",
-    "text": "Edit index.qmd\nindex.qmd file at the root of project is a landing page for all blog posts. Basically it is a document or .qmd file with only metadata and no content. Please see link for more details\n---\n# example of index.qmd\ntitle: <TITLE>\nlisting:\n  contents: posts\n  sort: \"date desc\"\n  type: default\n  categories: true\n  sort-ui: false\n  filter-ui: false\npage-layout: full\ntitle-block-banner: true\n---"
+    "text": "Edit index.qmd\nindex.qmd file located at the root of project is a landing page for all blog posts. Basically, it is a .qmd file with only metadata and no content. Please see link for more details.\n---\n# index.qmd\n# the rest metadata is suppressed for brevity\ntitle: <TITLE>\nlisting:\n  contents: posts\n  sort: \"date desc\"\n  type: default\n  categories: true\n  sort-ui: false\n  filter-ui: false\npage-layout: full\ntitle-block-banner: true\n---"
   },
   {
     "objectID": "posts/2022-07-09_quarto-blog/index.html#edit-about.qmd",
     "href": "posts/2022-07-09_quarto-blog/index.html#edit-about.qmd",
-    "title": "Create a personal blog using Quarto",
+    "title": "How to create a personal blog using Quarto",
     "section": "Edit about.qmd",
-    "text": "Edit about.qmd\nabout.qmd is a file for simple about page. We can change title, image, template social media link in metadata section. I suggest to put the image file in the same folder as .qmd file in this case is root of project. For template, there are 5 options to choose from jolla, trestles, solana, marquee, broadside. Choose one you like. Next edit your social media information i.e. twitter account, linkedin or github.\nThe body of about page i.e. desicription, education, work experience, skill, etc. can be edited as normal markdown file. See the official document for more details.\n# example\n---\ntitle: <TITLE>\nabout:\n  template: jolla # jolla trestles, solana, marquee, broadside \n  image: profile.jpg\n  links:\n    - icon: twitter\n      text: twitter\n      href: https://twitter.com\n    - icon: github\n      text: Github\n      href: https://github.com\n---\n\nPut all information as you need\n\n## Education\n\n## Work Experience\n\n## Skill"
+    "text": "Edit about.qmd\nabout.qmd is a .qmd for simple about page. We can change title, image, template social media link in metadata section. In general, I recommend to put the image file in the same folder as .qmd file in this case is the project’s root. For template, there are 5 options to choose from which are jolla, trestles, solana, marquee, broadside. Choose the one you like. Next edit your social media information i.e. twitter account, linkedin or github.\nThe body of about page i.e. desicription, education, work experience, skill, etc. can be edited as normal markdown file. See the official document for more details.\n# about.qmd\n# the rest metadata is suppressed for brevity\n---\ntitle: <TITLE>\nabout:\n  template: jolla # jolla trestles, solana, marquee, broadside \n  image: profile.jpg\n  links:\n    - icon: twitter\n      text: twitter\n      href: https://twitter.com\n    - icon: github\n      text: Github\n      href: https://github.com\n---\n\nPut all information as you need ...\n\n## Education\n...\n\n## Work Experience\n...\n\n## Skill\n..."
   },
   {
     "objectID": "posts/2022-07-09_quarto-blog/index.html#edit-_metadata.yml",
     "href": "posts/2022-07-09_quarto-blog/index.html#edit-_metadata.yml",
-    "title": "Create a personal blog using Quarto",
+    "title": "How to create a personal blog using Quarto",
     "section": "Edit _metadata.yml",
-    "text": "Edit _metadata.yml\n._metadata.yml is yml file that will be used in every .qmd files under the same folder. This will be a good place to set global or common metadata. My personal preference is to set title-block-banner: false."
+    "text": "Edit _metadata.yml\n._metadata.yml is a yml file that will be used in every .qmd files under the same folder. This will be a good place to set global or common parameters in metadata section."
   },
   {
-    "objectID": "posts/2022-07-09_quarto-blog/index.html#preview",
-    "href": "posts/2022-07-09_quarto-blog/index.html#preview",
-    "title": "Create a personal blog using Quarto",
-    "section": "Preview",
-    "text": "Preview\nwe can preview our entile blog by running quarto cli command.\nquarto <FOLDER> preview\nI suggest to run this command when we resume working on the project. This is good for interactive purpose as quarto will rerender once you save the file and we can see the result in the browser. However, when it is ready for publish, you should use another commmand.\nquarto <FOLDER> render"
+    "objectID": "posts/2022-07-09_quarto-blog/index.html#activate-preview-mode",
+    "href": "posts/2022-07-09_quarto-blog/index.html#activate-preview-mode",
+    "title": "How to create a personal blog using Quarto",
+    "section": "Activate preview mode",
+    "text": "Activate preview mode\nwe can preview our entire blog by running quarto cli command.\nquarto preview\nI recommend to run this command when we working on the project. This is good for interactive purpose as quarto will re-render every time you save a file and we can see the changes thruogh the browser. However, when we finish editing, we need to render before publishg the website as discussed later."
   },
   {
     "objectID": "posts/2022-07-09_quarto-blog/index.html#create-a-blog-post",
     "href": "posts/2022-07-09_quarto-blog/index.html#create-a-blog-post",
-    "title": "Create a personal blog using Quarto",
+    "title": "How to create a personal blog using Quarto",
     "section": "Create a blog post",
-    "text": "Create a blog post\nTo add a new post\n\nCreate a folder in"
+    "text": "Create a blog post\nTo add a new post\n\nCreate a folder under the posts folder. I recommend to use a date time slug followed by a breif description.\n\nCreate a filename index.qmd. Note other formats .md, .rmd, .ipynb should work also.\n\nEdit index.qmd both metadata and body.\n\n# a .qmd file: metadata\n# the rest metadata is suppressed for brevity\n---\ntitle: \"How to create a personal blog using Quarto\"\nauthor: \"Piyayut Chitchumnong\"\ndescription: | \n  A quick tutorial on how to create a personal blog using quarto.\ndate: \"2022-07-09\"\ncategories: [quarto, tutorial]\n---\n\nIt is a good practice for having a cover picture. We can accomplish this by\n\nput an image file in the same folder of the post.\nrename the image as feature.png or feature.jpg.\nuse ![](<FILENAME>) in the top of body section"
   },
   {
-    "objectID": "posts/2022-07-09_quarto-blog/index.html#create-new-page",
-    "href": "posts/2022-07-09_quarto-blog/index.html#create-new-page",
-    "title": "Create a personal blog using Quarto",
-    "section": "Create new page",
-    "text": "Create new page\nThe default gives you two pages: blog listing page and about page. However, you can add new page i.e. projects or talk page by following:\n\nCreate a new folder at the root i.e. projects\n\nCreate a new .qmd file i.e. projects.qmd\n\nEdit .qmd as a listing page as you wish\n\nEdit _quarto.yml to include the new page in navbar.\n\nCreate new project using .qmd file under the new folder. Similar to create a post.\n\n# suppress the rest metadata for brevity\n  navbar:\n    right:\n      - text: \"Projects\"\n        href: projects.qmd"
+    "objectID": "posts/2022-07-09_quarto-blog/index.html#edit-css-and-theme",
+    "href": "posts/2022-07-09_quarto-blog/index.html#edit-css-and-theme",
+    "title": "How to create a personal blog using Quarto",
+    "section": "Edit css and theme",
+    "text": "Edit css and theme\nWhen the project was initialized, default theme is cosmo and css used is styles.css which is a blank css file. We can adjust our blog’s look and feel by changing theme and edit styles.css.\n# default _quarto.yml\n# the rest metadata is suppressed for brevity\n---\nformat:\n  html:\n    theme: cosmo\n    css: styles.css\n---\n\ntheme: There are 25 built-in theme. Please see bootswatch for preview. We can change them by editing _quarto.yml\n\n# _quarto.yml\n# the rest metadata is suppressed for brevity\n---\nformat:\n  html:\n    theme: sandstone\n    css: styles.css\n---\n\ncss: For advance css users, the blog’s look can be further fine-tune by editting styles.css file. One common way to use css is to use custom fonts. In this case, I use google font that support Thai fonts. The file styles.css is editted as follows\n\n/* editted styles.css */\n@import url('https://fonts.googleapis.com/css2?family=Athiti:wght@700&display=swap');\n@import url('https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@400&display=swap');\n\nbody{\n  font-family: 'Bai Jamjuree', sans-serif;\n}\n\nh1, h2, h3, h4, h5, h6 {\n  font-family: 'Athiti', sans-serif;\n}"
   },
   {
-    "objectID": "posts/welcome/index.html",
-    "href": "posts/welcome/index.html",
-    "title": "Welcome To My Blog",
-    "section": "",
-    "text": "Since this post doesn’t specify an explicit image, the first image in the post will be used in the listing page of posts."
+    "objectID": "posts/2022-07-09_quarto-blog/index.html#create-new-listing-page",
+    "href": "posts/2022-07-09_quarto-blog/index.html#create-new-listing-page",
+    "title": "How to create a personal blog using Quarto",
+    "section": "Create new listing page",
+    "text": "Create new listing page\nThe default gives you two pages: blog listing page and about page. However, you can add new page i.e. projects or talk page by following:\n\nCreate a new folder at the root i.e. projects or talks\n\nCreate a new .qmd file i.e. projects.qmd\n\nEdit .qmd as a listing page as you wish\n\nEdit _quarto.yml to include the new page in navbar.\n\n\n# _quarto.yml\n# the rest metadata is suppressed for brevity\nwebsite:\n  navbar:\n    right:\n      - text: \"Projects\"\n        href: projects.qmd\n\nCreate a new post (subfolder) for each project using .qmd file under the new folder. Similar way to create a post."
+  },
+  {
+    "objectID": "posts/2022-07-09_quarto-blog/index.html#add-comments",
+    "href": "posts/2022-07-09_quarto-blog/index.html#add-comments",
+    "title": "How to create a personal blog using Quarto",
+    "section": "Add comments",
+    "text": "Add comments\nWe can allow reader to comment or share their thoughts on our blog. There are 3 methods supported by quarto: Hypothes.is, Utterances and Giscus. We adopt utterances due to its simplicity. We just need a github repo. To activate comment widget, we edit _quarto.yml by adding our github repo as example below. The github repo is simply used as a storage of user comments in issues section. See link for more details of all three methods.\n# _quarto.yml\n# the rest metadata is suppressed for brevity\nwebsite:\n  comments:\n    utterances:\n      repo: <github-repo>"
   },
   {
     "objectID": "projects/mapthai/index.html",
     "href": "projects/mapthai/index.html",
     "title": "Mapthai",
     "section": "",
-    "text": "Mapthai"
-  },
-  {
-    "objectID": "projects/welcome/index.html",
-    "href": "projects/welcome/index.html",
-    "title": "Welcome To My Blog",
-    "section": "",
-    "text": "Since this post doesn’t specify an explicit image, the first image in the post will be used in the listing page of posts."
+    "text": "mapthai package link"
   },
   {
     "objectID": "projects.html",
     "href": "projects.html",
     "title": "Project",
     "section": "",
-    "text": "R package\n\n\nmap\n\n\n\n\n\n\n\nPiyayut Chitchumnong\n\n\nJul 9, 2022\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nnews\n\n\n\n\n\n\n\nTristan O’Malley\n\n\nJul 6, 2022\n\n\n\n\n\n\n\n\nNo matching items"
+    "text": "R package\n\n\nmap\n\n\n\nR package providing map polygon of Thailand.\n\n\n\nPiyayut Chitchumnong\n\n\nJul 9, 2022\n\n\n\n\n\n\n\n\nNo matching items"
   }
 ]
