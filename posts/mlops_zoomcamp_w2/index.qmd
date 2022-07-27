@@ -1,0 +1,129 @@
+---
+title: "MLOps Zoomcamp Week 2"
+author: "Piyayut Chitchumnong"
+description: | 
+  My note on MLOps Zoomcamp - Week 2: Experiment Tracking
+date: "2022-07-13"
+categories: [MLOps, experiment tracking, mlflow, model registry]
+draft: true
+---
+
+# Introduction
+
+
+## Concepts
+
+- ML experiment: the **process** of building an ML model
+- Experiment run: each **trial** in an ML experiment
+- Run artifact: any **file** that is associated with an ML run
+- Experiment metadata: information about an ML experiment
+
+
+## Experiment Tracking
+
+It is the process of keeping track of all the **relevant information** from an ML experiment, which includes:
+
+- Source code
+- Environment
+- Data
+- Model
+- Hyperparameters
+- Metrics
+- etc.
+
+> **Note**: The list of relevant information depends on experiment.
+
+
+## Benefits of experiment tracking
+
+- Reproducibility
+- Organization
+- Optimization
+
+> **Note**: We can use spreadsheets to do experiment tracking but they are 
+> 
+> - error-prone
+> - no standard format
+> - difficult for collaboration.
+
+
+## MLflow
+[mlflow](https://mlflow.org/) is an open-source platform for ml life cycle. It is a python package with 4 main modules:
+
+- Tracking: allows us to organize ml experiments into runs
+- Models
+- Model Registry
+- Projects
+
+## Quick demo
+```bash
+# make sure you are in virtual environment
+pip install mlflow
+mlfow # list all commands
+mlflow ui # to open mlflow UI which can be access via http:://127.0.0.1:5000
+```
+
+
+# Getting started with mlflow
+
+requirement packages
+- mlflow
+- jupyter
+- scikit-learn
+- pandas
+- seaboarn
+- hyperopt
+- xgboost
+- pyarrow
+- boto3
+
+## Start mlflow with database
+```bash
+# make sure to cd to your notebook directory
+mlflow ui --backend-store-uri sqlite:///mlflow.db
+```
+
+`--backend-store-uri` is used to allow mlflow to store artifacts in sqlite db.
+
+
+## Log information
+
+Open VScode and modify week 1 notebook
+Make sure that you use the correct python kernel
+[notebook](link)
+
+
+There are many ways to conduct experiments
+- different models
+- different parameters of each model
+
+```python
+#| eval: false
+with mlflow.start_run():
+  
+  mlflow.set_tag("developer", "piyayut")
+
+  mlflow.log_param("train-data-path", "./data/green_tripdata_2021-01.parquet")
+  mlflow.log_param("valid-data-path", "./data/green_tripdata_2021-02.parquet")
+
+  alpha = 0.01
+  mlflow.log_param("alpha", 0.01)  
+  lr = Lasso(alpha)
+  lr.fit(X_train, y_train)
+
+  y_pred = lr.predict(X_val)
+  rmse = mean_squared_error(y_val, y_pred, squared=False)
+  mlflow.log_metric("rmse", rmse)
+```
+
+Notes:
+
+- use `with mlflow.start_run()`
+- assign parameter to a variable
+- `mlflow.set_tag(key, value)` to store tag information for filtering later
+- `mlflow.log_param` to store parameters used in each run i.e. lasso alpha, train data
+- `mlflow.log_metric` to store metrics of each run i.e. rmse
+- in mlflow ui, we can click on run for details
+
+# Experiment tracking with mlflow
+

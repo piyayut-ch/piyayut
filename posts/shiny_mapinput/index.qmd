@@ -1,0 +1,23 @@
+---
+title: "How to use leaflet map as an shiny input"
+author: "Piyayut Chitchumnong"
+description: | 
+  A quick tutorial on how to create a personal blog using quarto.
+date: "2022-07-09"
+categories: [shiny, leaflet]
+draft: true
+---
+
+```{r}
+library(tidyverse)
+library(sf)
+library(leaflet)
+library(rnaturalearth)
+
+world <- rnaturalearth::ne_countries(returnclass = "sf")
+```
+
+```{r}
+world |> colnames()
+# plot(world)
+```

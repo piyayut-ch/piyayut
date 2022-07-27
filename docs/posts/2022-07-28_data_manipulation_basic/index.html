@@ -1,0 +1,1431 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-0.9.658">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Piyayut Chitchumnong">
+<meta name="dcterms.date" content="2022-07-28">
+<meta name="description" content="A code snippet to how to implement basic data manipulation using R and python.">
+
+<title>Piyayut Chitchumnong - Grammar of Data Manipulation in R and python</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../logo.png" rel="icon" type="image/png">
+<script src="../../site_libs/cookie-consent/cookie-consent.js"></script>
+<link href="../../site_libs/cookie-consent/cookie-consent.css" rel="stylesheet">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-CE4NX90PD4"></script>
+
+<script type="text/plain" cookie-consent="tracking">
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-CE4NX90PD4', { 'anonymize_ip': true});
+</script>
+
+<script type="text/javascript" charset="UTF-8">
+document.addEventListener('DOMContentLoaded', function () {
+cookieconsent.run({
+  "notice_banner_type":"headline",
+  "consent_type":"express",
+  "palette":"dark",
+  "language":"en",
+  "page_load_consent_levels":["strictly-necessary"],
+  "notice_banner_reject_button_hide":false,
+  "preferences_center_close_button_hide":false,
+  "website_name":""
+  });
+});
+</script> 
+  
+
+
+<link rel="stylesheet" href="../../styles.css">
+<meta name="twitter:title" content="Piyayut Chitchumnong - Grammar of Data Manipulation in R and python">
+<meta name="twitter:description" content="A code snippet to how to implement basic data manipulation using R and python.">
+<meta name="twitter:image" content="https://piyayut-ch.github.io/piyayut/posts\2022-07-28_data_manipulation_basic\feature.jpg">
+<meta name="twitter:creator" content="@PiyayutCh">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Piyayut Chitchumnong</span>
+  </a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html">Posts</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../projects.html">Projects</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html">About</a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/piyayut-ch"><i class="bi bi-github" role="img">
+</i> 
+ </a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/piyayutch"><i class="bi bi-twitter" role="img">
+</i> 
+ </a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/piyayut-chitchumnong/"><i class="bi bi-linkedin" role="img">
+</i> 
+ </a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Grammar of Data Manipulation in R and python</h1>
+                  <div>
+        <div class="description">
+          <p>A code snippet to how to implement basic data manipulation using R and python.</p>
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">tutorial</div>
+                <div class="quarto-category">R</div>
+                <div class="quarto-category">python</div>
+                <div class="quarto-category">data-manipulation</div>
+                <div class="quarto-category">data-wraning</div>
+                <div class="quarto-category">data-transformation</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Piyayut Chitchumnong </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">July 28, 2022</p>
+      </div>
+    </div>
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"> <span class="header-section-number">1</span> Introduction</a></li>
+  <li><a href="#load-packages" id="toc-load-packages" class="nav-link" data-scroll-target="#load-packages"> <span class="header-section-number">2</span> Load packages</a></li>
+  <li><a href="#data-gapminder" id="toc-data-gapminder" class="nav-link" data-scroll-target="#data-gapminder"> <span class="header-section-number">3</span> Data: gapminder</a></li>
+  <li><a href="#reading-data" id="toc-reading-data" class="nav-link" data-scroll-target="#reading-data"> <span class="header-section-number">4</span> Reading data</a>
+  <ul class="collapse">
+  <li><a href="#csv" id="toc-csv" class="nav-link" data-scroll-target="#csv"> <span class="header-section-number">4.1</span> csv</a></li>
+  <li><a href="#excel" id="toc-excel" class="nav-link" data-scroll-target="#excel"> <span class="header-section-number">4.2</span> excel</a></li>
+  <li><a href="#parquet" id="toc-parquet" class="nav-link" data-scroll-target="#parquet"> <span class="header-section-number">4.3</span> parquet</a></li>
+  </ul></li>
+  <li><a href="#selecting-variables" id="toc-selecting-variables" class="nav-link" data-scroll-target="#selecting-variables"> <span class="header-section-number">5</span> Selecting variables</a></li>
+  <li><a href="#filtering-rows" id="toc-filtering-rows" class="nav-link" data-scroll-target="#filtering-rows"> <span class="header-section-number">6</span> Filtering rows</a></li>
+  <li><a href="#adding-new-variables" id="toc-adding-new-variables" class="nav-link" data-scroll-target="#adding-new-variables"> <span class="header-section-number">7</span> Adding new variables</a></li>
+  <li><a href="#arranging-rows-by-variables" id="toc-arranging-rows-by-variables" class="nav-link" data-scroll-target="#arranging-rows-by-variables"> <span class="header-section-number">8</span> Arranging rows by variables</a></li>
+  <li><a href="#summarizing-and-grouping" id="toc-summarizing-and-grouping" class="nav-link" data-scroll-target="#summarizing-and-grouping"> <span class="header-section-number">9</span> Summarizing and Grouping</a>
+  <ul class="collapse">
+  <li><a href="#without-group" id="toc-without-group" class="nav-link" data-scroll-target="#without-group"> <span class="header-section-number">9.1</span> without group</a></li>
+  <li><a href="#by-groups" id="toc-by-groups" class="nav-link" data-scroll-target="#by-groups"> <span class="header-section-number">9.2</span> by groups</a></li>
+  </ul></li>
+  <li><a href="#reshaping-table" id="toc-reshaping-table" class="nav-link" data-scroll-target="#reshaping-table"> <span class="header-section-number">10</span> Reshaping table</a>
+  <ul class="collapse">
+  <li><a href="#pivot-wider" id="toc-pivot-wider" class="nav-link" data-scroll-target="#pivot-wider"> <span class="header-section-number">10.1</span> Pivot wider</a></li>
+  <li><a href="#pivot-longer" id="toc-pivot-longer" class="nav-link" data-scroll-target="#pivot-longer"> <span class="header-section-number">10.2</span> Pivot longer</a></li>
+  </ul></li>
+  <li><a href="#join-tables" id="toc-join-tables" class="nav-link" data-scroll-target="#join-tables"> <span class="header-section-number">11</span> Join tables</a></li>
+  <li><a href="#conclusion-remarks" id="toc-conclusion-remarks" class="nav-link" data-scroll-target="#conclusion-remarks"> <span class="header-section-number">12</span> Conclusion Remarks</a>
+  <ul class="collapse">
+  <li><a href="#useful-resource" id="toc-useful-resource" class="nav-link" data-scroll-target="#useful-resource"> <span class="header-section-number">12.1</span> Useful resource:</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="feature.jpg" class="img-fluid figure-img"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Source: Photo by Engin Akyurt https://unsplash.com/photos/tYXBfhpZA1k</figcaption><p></p>
+</figure>
+</div>
+<section id="introduction" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Introduction</h1>
+<p>In this tutorial, we cover basic data manipulation operations including</p>
+<ul>
+<li>Reading data from variety of file formats.</li>
+<li>Selecting variables.</li>
+<li>Filtering rows.</li>
+<li>Adding new variables.</li>
+<li>Arranging rows by variables.</li>
+<li>Summarizing and Grouping.</li>
+<li>Reshaping data between wide and long format.</li>
+<li>Joining tables using key(s) variable.</li>
+<li>Saving data to desired file formats.</li>
+</ul>
+</section>
+<section id="load-packages" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Load packages</h1>
+<p>Both <code>R</code> and <code>python</code> are open-source and very powerful for data-related work. There are many packages and libraries that can be used, the challenge is to learn and pick the right tool to the task in hand. In this tutorial, we choose standard tools in both language.</p>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">python</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<p>We use</p>
+<ul>
+<li><code>dplyr</code> for data manipulation</li>
+<li><code>tidyr</code> for reshaping, join data</li>
+<li><code>readr</code> for read csv files</li>
+<li><code>readxl</code> for read/import excel files</li>
+<li><code>wriexl</code> for write/import excel files</li>
+<li><code>arrow</code> for read/write parquet files</li>
+<li><code>gapminder</code> example data for demonstration</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr, <span class="at">warn.conflicts =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(writexl)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(arrow, <span class="at">warn.conflicts =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># make sure that you have packaged installed in your machine/environments</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># you can install with install.packages("&lt;library_name&gt;")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<p>We mainly use <code>pandas</code>, however additional packages required to be installed which are <code>openpyxl</code> and <code>pyarrow</code> package as we want to work with excel and parquet files.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># make sure that you have pandas pyarrow openpyxl </span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># installed in your machine/environments</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># !pip install pandas openpyxl pyarrow</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="data-gapminder" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Data: gapminder</h1>
+<p>One of the important step to conduct a data analytics or machine learning project is to understand the data.</p>
+<p>Data used in this tutorial are from <code>gapminder</code> R package inspired by famous <a href="https://www.youtube.com/watch?v=hVimVzgtD6w">Hans Rosling ted’s talk</a>. We use two tables which are</p>
+<ul>
+<li><code>gapminder</code> contain a data of countries from 1952 - 2007 with 3 variables including population (pop), life expectancy (LifeExp), and gdp per capita(gdpPercap).</li>
+</ul>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; # A tibble: 1,704 × 6
+#&gt;    country     continent  year lifeExp      pop gdpPercap
+#&gt;    &lt;fct&gt;       &lt;fct&gt;     &lt;int&gt;   &lt;dbl&gt;    &lt;int&gt;     &lt;dbl&gt;
+#&gt;  1 Afghanistan Asia       1952    28.8  8425333      779.
+#&gt;  2 Afghanistan Asia       1957    30.3  9240934      821.
+#&gt;  3 Afghanistan Asia       1962    32.0 10267083      853.
+#&gt;  4 Afghanistan Asia       1967    34.0 11537966      836.
+#&gt;  5 Afghanistan Asia       1972    36.1 13079460      740.
+#&gt;  6 Afghanistan Asia       1977    38.4 14880372      786.
+#&gt;  7 Afghanistan Asia       1982    39.9 12881816      978.
+#&gt;  8 Afghanistan Asia       1987    40.8 13867957      852.
+#&gt;  9 Afghanistan Asia       1992    41.7 16317921      649.
+#&gt; 10 Afghanistan Asia       1997    41.8 22227415      635.
+#&gt; # … with 1,694 more rows</code></pre>
+</div>
+</div>
+<ul>
+<li><code>country_codes</code> contains country names and associated ISO 3166-1 country codes (alpha and numeric) will be used for join.</li>
+</ul>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; # A tibble: 187 × 3
+#&gt;    country     iso_alpha iso_num
+#&gt;    &lt;chr&gt;       &lt;chr&gt;       &lt;int&gt;
+#&gt;  1 Afghanistan AFG             4
+#&gt;  2 Albania     ALB             8
+#&gt;  3 Algeria     DZA            12
+#&gt;  4 Angola      AGO            24
+#&gt;  5 Argentina   ARG            32
+#&gt;  6 Armenia     ARM            51
+#&gt;  7 Aruba       ABW           533
+#&gt;  8 Australia   AUS            36
+#&gt;  9 Austria     AUT            40
+#&gt; 10 Azerbaijan  AZE            31
+#&gt; # … with 177 more rows</code></pre>
+</div>
+</div>
+</section>
+<section id="reading-data" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Reading data</h1>
+<p>There are many ways to get data into your machine for data analytics</p>
+<ul>
+<li>files i.e.&nbsp;excel, csv, parquet, etc.</li>
+<li>database</li>
+<li>web api</li>
+<li>web scraping</li>
+</ul>
+<p>For the sake of simplicity, we use file approach. I will show how to read or write data in other approaches in future posts.</p>
+<p>There are many file types, in this tutorial chooses the most common ones</p>
+<ul>
+<li><code>csv</code></li>
+<li><code>excel</code></li>
+<li><code>parquet</code></li>
+</ul>
+<section id="csv" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="csv"><span class="header-section-number">4.1</span> csv</h2>
+<p>CSV is a text file that each columns are seperated by commas stored in <code>.csv</code> file extension. Aside from <code>csv</code>, there are similar text file that store spreadsheet data but used different seperator or fixed width to determine column by position. <code>gapminder.csv</code> file can be downloaded <a href="https://raw.githubusercontent.com/piyayut-ch/piyayut/main/posts/2022-07-28_data_manipulation_basic/gapminder.csv">here</a>.</p>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false">python</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
+<p>We use function <code>read_csv</code> from <code>readr</code> package.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>gapminder <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"gapminder.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># you can use file path in your local machine or url path.</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>gapminder</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; # A tibble: 1,704 × 6
+#&gt;    country     continent  year lifeExp      pop gdpPercap
+#&gt;    &lt;chr&gt;       &lt;chr&gt;     &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;
+#&gt;  1 Afghanistan Asia       1952    28.8  8425333      779.
+#&gt;  2 Afghanistan Asia       1957    30.3  9240934      821.
+#&gt;  3 Afghanistan Asia       1962    32.0 10267083      853.
+#&gt;  4 Afghanistan Asia       1967    34.0 11537966      836.
+#&gt;  5 Afghanistan Asia       1972    36.1 13079460      740.
+#&gt;  6 Afghanistan Asia       1977    38.4 14880372      786.
+#&gt;  7 Afghanistan Asia       1982    39.9 12881816      978.
+#&gt;  8 Afghanistan Asia       1987    40.8 13867957      852.
+#&gt;  9 Afghanistan Asia       1992    41.7 16317921      649.
+#&gt; 10 Afghanistan Asia       1997    41.8 22227415      635.
+#&gt; # … with 1,694 more rows</code></pre>
+</div>
+</div>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Note <code>&lt;-</code> is convention assignment in <code>R</code>, but <code>=</code> can also be used.</p>
+</div>
+</div>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>gapminder <span class="op">=</span> pd.read_csv(<span class="st">"gapminder.csv"</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>gapminder</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt;           country continent  year  lifeExp       pop   gdpPercap
+#&gt; 0     Afghanistan      Asia  1952   28.801   8425333  779.445314
+#&gt; 1     Afghanistan      Asia  1957   30.332   9240934  820.853030
+#&gt; 2     Afghanistan      Asia  1962   31.997  10267083  853.100710
+#&gt; 3     Afghanistan      Asia  1967   34.020  11537966  836.197138
+#&gt; 4     Afghanistan      Asia  1972   36.088  13079460  739.981106
+#&gt; ...           ...       ...   ...      ...       ...         ...
+#&gt; 1699     Zimbabwe    Africa  1987   62.351   9216418  706.157306
+#&gt; 1700     Zimbabwe    Africa  1992   60.377  10704340  693.420786
+#&gt; 1701     Zimbabwe    Africa  1997   46.809  11404948  792.449960
+#&gt; 1702     Zimbabwe    Africa  2002   39.989  11926563  672.038623
+#&gt; 1703     Zimbabwe    Africa  2007   43.487  12311143  469.709298
+#&gt; 
+#&gt; [1704 rows x 6 columns]</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="excel" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="excel"><span class="header-section-number">4.2</span> excel</h2>
+<p>MS excel is a spreadsheet program and store data in <code>.xls</code> (2003 version and before) or <code>.xlsx</code>. They are not text files like <code>csv</code>, but they are a kind of binary files (XML-like) format. An excel file can contain multiple sheets and within each sheet can have multiple tables. <code>gapminder.xlsx</code> file can be downloaded <a href="https://raw.githubusercontent.com/piyayut-ch/piyayut/main/posts/2022-07-28_data_manipulation_basic/gapminder.xlsx">here</a>.</p>
+<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Unstructured excel files are difficult to work with using programming. Excel are still widely used by many organizations, so at leaset, we should convince users to make a proper spreadsheet for example follow <a href="https://www.biostat.wisc.edu/~kbroman/publications/dataorg.pdf">Broman and Woo’ guideline</a>.</p>
+</div>
+</div>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false">python</a></li></ul>
+<div class="tab-content">
+<div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
+<p>We use function <code>read_excel</code> from <code>readxl</code> package. As an excel file can have multiple worksheets, we can read one sheet at a time and we can specify sheet to import using <code>sheet</code> argument where it could be index or sheet name.</p>
+<ul>
+<li>read fist sheet.</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>gapminder <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="st">"gapminder.xlsx"</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>gapminder</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; # A tibble: 1,704 × 6
+#&gt;    country     continent  year lifeExp      pop gdpPercap
+#&gt;    &lt;chr&gt;       &lt;chr&gt;     &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;
+#&gt;  1 Afghanistan Asia       1952    28.8  8425333      779.
+#&gt;  2 Afghanistan Asia       1957    30.3  9240934      821.
+#&gt;  3 Afghanistan Asia       1962    32.0 10267083      853.
+#&gt;  4 Afghanistan Asia       1967    34.0 11537966      836.
+#&gt;  5 Afghanistan Asia       1972    36.1 13079460      740.
+#&gt;  6 Afghanistan Asia       1977    38.4 14880372      786.
+#&gt;  7 Afghanistan Asia       1982    39.9 12881816      978.
+#&gt;  8 Afghanistan Asia       1987    40.8 13867957      852.
+#&gt;  9 Afghanistan Asia       1992    41.7 16317921      649.
+#&gt; 10 Afghanistan Asia       1997    41.8 22227415      635.
+#&gt; # … with 1,694 more rows</code></pre>
+</div>
+</div>
+<ul>
+<li>read second sheet.</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>country_codes <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="st">"gapminder.xlsx"</span>, <span class="at">sheet =</span> <span class="dv">2</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>country_codes</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; # A tibble: 187 × 3
+#&gt;    country     iso_alpha iso_num
+#&gt;    &lt;chr&gt;       &lt;chr&gt;       &lt;dbl&gt;
+#&gt;  1 Afghanistan AFG             4
+#&gt;  2 Albania     ALB             8
+#&gt;  3 Algeria     DZA            12
+#&gt;  4 Angola      AGO            24
+#&gt;  5 Argentina   ARG            32
+#&gt;  6 Armenia     ARM            51
+#&gt;  7 Aruba       ABW           533
+#&gt;  8 Australia   AUS            36
+#&gt;  9 Austria     AUT            40
+#&gt; 10 Azerbaijan  AZE            31
+#&gt; # … with 177 more rows</code></pre>
+</div>
+</div>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Index in <code>R</code> starts with 1.</p>
+</div>
+</div>
+</div>
+<div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
+<p><code>pandas</code> has a function <code>read_excel</code> to import excel files.</p>
+<ul>
+<li>read fist sheet.</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>gapminder <span class="op">=</span> pd.read_excel(<span class="st">"gapminder.xlsx"</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>gapminder</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt;           country continent  year  lifeExp       pop   gdpPercap
+#&gt; 0     Afghanistan      Asia  1952   28.801   8425333  779.445314
+#&gt; 1     Afghanistan      Asia  1957   30.332   9240934  820.853030
+#&gt; 2     Afghanistan      Asia  1962   31.997  10267083  853.100710
+#&gt; 3     Afghanistan      Asia  1967   34.020  11537966  836.197138
+#&gt; 4     Afghanistan      Asia  1972   36.088  13079460  739.981106
+#&gt; ...           ...       ...   ...      ...       ...         ...
+#&gt; 1699     Zimbabwe    Africa  1987   62.351   9216418  706.157306
+#&gt; 1700     Zimbabwe    Africa  1992   60.377  10704340  693.420786
+#&gt; 1701     Zimbabwe    Africa  1997   46.809  11404948  792.449960
+#&gt; 1702     Zimbabwe    Africa  2002   39.989  11926563  672.038623
+#&gt; 1703     Zimbabwe    Africa  2007   43.487  12311143  469.709298
+#&gt; 
+#&gt; [1704 rows x 6 columns]</code></pre>
+</div>
+</div>
+<ul>
+<li>read second sheet</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>country_codes <span class="op">=</span> pd.read_excel(<span class="st">"gapminder.xlsx"</span>, sheet_name <span class="op">=</span> <span class="dv">1</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>country_codes</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt;                 country iso_alpha  iso_num
+#&gt; 0           Afghanistan       AFG        4
+#&gt; 1               Albania       ALB        8
+#&gt; 2               Algeria       DZA       12
+#&gt; 3                Angola       AGO       24
+#&gt; 4             Argentina       ARG       32
+#&gt; ..                  ...       ...      ...
+#&gt; 182             Vietnam       VNM      704
+#&gt; 183  West Bank and Gaza       PSE      275
+#&gt; 184         Yemen, Rep.       YEM      887
+#&gt; 185              Zambia       ZMB      894
+#&gt; 186            Zimbabwe       ZWE      716
+#&gt; 
+#&gt; [187 rows x 3 columns]</code></pre>
+</div>
+</div>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Index in <code>python</code> starts with 0.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="parquet" class="level2" data-number="4.3">
+<h2 data-number="4.3" class="anchored" data-anchor-id="parquet"><span class="header-section-number">4.3</span> parquet</h2>
+<p><code>Parquet</code> is an open file format that is great for speed and storage. Some organizeations have changed the way they sharing their data files to <code>parquet</code> instead of <code>csv</code>. <code>gapminder.parquet</code> file can be downloaded <a href="https://raw.githubusercontent.com/piyayut-ch/piyayut/main/posts/2022-07-28_data_manipulation_basic/gapminder.parquet">here</a>.</p>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" role="tab" aria-controls="tabset-4-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-2" role="tab" aria-controls="tabset-4-2" aria-selected="false">python</a></li></ul>
+<div class="tab-content">
+<div id="tabset-4-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-4-1-tab">
+<p>We use function <code>read_parquet</code> from <code>arrow</code> package.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>gapminder <span class="ot">&lt;-</span> <span class="fu">read_parquet</span>(<span class="st">"gapminder.parquet"</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>gapminder</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; # A tibble: 1,704 × 6
+#&gt;    country     continent  year lifeExp      pop gdpPercap
+#&gt;    &lt;fct&gt;       &lt;fct&gt;     &lt;int&gt;   &lt;dbl&gt;    &lt;int&gt;     &lt;dbl&gt;
+#&gt;  1 Afghanistan Asia       1952    28.8  8425333      779.
+#&gt;  2 Afghanistan Asia       1957    30.3  9240934      821.
+#&gt;  3 Afghanistan Asia       1962    32.0 10267083      853.
+#&gt;  4 Afghanistan Asia       1967    34.0 11537966      836.
+#&gt;  5 Afghanistan Asia       1972    36.1 13079460      740.
+#&gt;  6 Afghanistan Asia       1977    38.4 14880372      786.
+#&gt;  7 Afghanistan Asia       1982    39.9 12881816      978.
+#&gt;  8 Afghanistan Asia       1987    40.8 13867957      852.
+#&gt;  9 Afghanistan Asia       1992    41.7 16317921      649.
+#&gt; 10 Afghanistan Asia       1997    41.8 22227415      635.
+#&gt; # … with 1,694 more rows</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-4-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-2-tab">
+<p><code>pandas</code> has a function <code>read_parquet</code> to import excel files.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>gapminder <span class="op">=</span> pd.read_parquet(<span class="st">"gapminder.parquet"</span>)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>gapminder</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt;           country continent  year  lifeExp       pop   gdpPercap
+#&gt; 0     Afghanistan      Asia  1952   28.801   8425333  779.445314
+#&gt; 1     Afghanistan      Asia  1957   30.332   9240934  820.853030
+#&gt; 2     Afghanistan      Asia  1962   31.997  10267083  853.100710
+#&gt; 3     Afghanistan      Asia  1967   34.020  11537966  836.197138
+#&gt; 4     Afghanistan      Asia  1972   36.088  13079460  739.981106
+#&gt; ...           ...       ...   ...      ...       ...         ...
+#&gt; 1699     Zimbabwe    Africa  1987   62.351   9216418  706.157306
+#&gt; 1700     Zimbabwe    Africa  1992   60.377  10704340  693.420786
+#&gt; 1701     Zimbabwe    Africa  1997   46.809  11404948  792.449960
+#&gt; 1702     Zimbabwe    Africa  2002   39.989  11926563  672.038623
+#&gt; 1703     Zimbabwe    Africa  2007   43.487  12311143  469.709298
+#&gt; 
+#&gt; [1704 rows x 6 columns]</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="selecting-variables" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Selecting variables</h1>
+<p>In real data wrangling work, we often get a table that contains too many variables. It is helpful to select only needed variables for further uses. In this tutorial, we select three variables inclduing <code>country</code>, <code>year</code> and <code>pop</code>.</p>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-5-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-1" role="tab" aria-controls="tabset-5-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-2" role="tab" aria-controls="tabset-5-2" aria-selected="false">python</a></li></ul>
+<div class="tab-content">
+<div id="tabset-5-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-5-1-tab">
+<p>We use <code>select</code> from <code>dplyr</code> package.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>gapminder <span class="sc">|&gt;</span> <span class="fu">select</span>(country, year, pop)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; # A tibble: 1,704 × 3
+#&gt;    country      year      pop
+#&gt;    &lt;fct&gt;       &lt;int&gt;    &lt;int&gt;
+#&gt;  1 Afghanistan  1952  8425333
+#&gt;  2 Afghanistan  1957  9240934
+#&gt;  3 Afghanistan  1962 10267083
+#&gt;  4 Afghanistan  1967 11537966
+#&gt;  5 Afghanistan  1972 13079460
+#&gt;  6 Afghanistan  1977 14880372
+#&gt;  7 Afghanistan  1982 12881816
+#&gt;  8 Afghanistan  1987 13867957
+#&gt;  9 Afghanistan  1992 16317921
+#&gt; 10 Afghanistan  1997 22227415
+#&gt; # … with 1,694 more rows</code></pre>
+</div>
+</div>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Pipe operator <code>|&gt;</code> is an operator that take the previous object and apply it to the subsequent function as the first argument (default). We can use <code>|&gt;</code> multiple times to the same object. This is called <code>chaning</code> This style of coding help coding more human readable as it avoids nested code. This is similar to <code>method chainging</code> in <code>python</code>.</p>
+<p><code>|&gt;</code> was introduced in <code>R</code> version 4.0. Previous version used <code>%&gt;%</code> from <code>magrittr</code>. You will see <code>%&gt;%</code> in many tutorials or books.</p>
+</div>
+</div>
+</div>
+<div id="tabset-5-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-2-tab">
+<p>To subset pandas, we can use <code>.loc</code> where the first argument for row, and the second argument is for columns. To select all rows used keyword <code>:</code>. To select columns, you can use character vector.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>gapminder.loc[:, [<span class="st">"country"</span>, <span class="st">"year"</span>, <span class="st">"pop"</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt;           country  year       pop
+#&gt; 0     Afghanistan  1952   8425333
+#&gt; 1     Afghanistan  1957   9240934
+#&gt; 2     Afghanistan  1962  10267083
+#&gt; 3     Afghanistan  1967  11537966
+#&gt; 4     Afghanistan  1972  13079460
+#&gt; ...           ...   ...       ...
+#&gt; 1699     Zimbabwe  1987   9216418
+#&gt; 1700     Zimbabwe  1992  10704340
+#&gt; 1701     Zimbabwe  1997  11404948
+#&gt; 1702     Zimbabwe  2002  11926563
+#&gt; 1703     Zimbabwe  2007  12311143
+#&gt; 
+#&gt; [1704 rows x 3 columns]</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="filtering-rows" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Filtering rows</h1>
+<p>We often interest in a subset of the data. There are many ways to filter data i.e.&nbsp;by index of rows. But one common way is to filter by conditions. In this tutorial, we want a data of Thailand since 1980 from <code>gapminder</code>.</p>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-6-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-1" role="tab" aria-controls="tabset-6-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-6-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-2" role="tab" aria-controls="tabset-6-2" aria-selected="false">python</a></li></ul>
+<div class="tab-content">
+<div id="tabset-6-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-6-1-tab">
+<p>We use <code>filter</code> from <code>dplyr</code> package.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>gapminder <span class="sc">|&gt;</span> <span class="fu">filter</span>(country <span class="sc">==</span> <span class="st">"Thailand"</span> <span class="sc">&amp;</span> year <span class="sc">&gt;</span> <span class="dv">1980</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; # A tibble: 6 × 6
+#&gt;   country  continent  year lifeExp      pop gdpPercap
+#&gt;   &lt;fct&gt;    &lt;fct&gt;     &lt;int&gt;   &lt;dbl&gt;    &lt;int&gt;     &lt;dbl&gt;
+#&gt; 1 Thailand Asia       1982    64.6 48827160     2393.
+#&gt; 2 Thailand Asia       1987    66.1 52910342     2983.
+#&gt; 3 Thailand Asia       1992    67.3 56667095     4617.
+#&gt; 4 Thailand Asia       1997    67.5 60216677     5853.
+#&gt; 5 Thailand Asia       2002    68.6 62806748     5913.
+#&gt; 6 Thailand Asia       2007    70.6 65068149     7458.</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-6-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-2-tab">
+<p>We use <code>query</code> method from <code>pandas</code> package.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>gapminder.query(<span class="st">'country == "Thailand" &amp; year &gt; 1980'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt;        country continent  year  lifeExp       pop    gdpPercap
+#&gt; 1530  Thailand      Asia  1982   64.597  48827160  2393.219781
+#&gt; 1531  Thailand      Asia  1987   66.084  52910342  2982.653773
+#&gt; 1532  Thailand      Asia  1992   67.298  56667095  4616.896545
+#&gt; 1533  Thailand      Asia  1997   67.521  60216677  5852.625497
+#&gt; 1534  Thailand      Asia  2002   68.564  62806748  5913.187529
+#&gt; 1535  Thailand      Asia  2007   70.616  65068149  7458.396327</code></pre>
+</div>
+</div>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>query</code> method argument is string. If the condition used another string, we need to use <code>''</code> and <code>""</code> to differentiate between a string used for string comparison and a string used for query arguement as a whole.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="adding-new-variables" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> Adding new variables</h1>
+<p>When we analyze data, we usually have to compute new variable(s) using original variables. In this tutorial, we compute two new vairables</p>
+<ul>
+<li><code>pop_m</code> is population in million.</li>
+<li><code>gdp_m</code> is total GDP in million USD where gdp is computed from gdpPercap multiply by pop.</li>
+</ul>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-7-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-1" role="tab" aria-controls="tabset-7-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-7-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-2" role="tab" aria-controls="tabset-7-2" aria-selected="false">python</a></li></ul>
+<div class="tab-content">
+<div id="tabset-7-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-7-1-tab">
+<p>We use <code>mutate</code> from <code>dplyr</code> package. It can use to make multiple variables in single function call.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>gapminder <span class="sc">|&gt;</span> <span class="fu">mutate</span>(</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">pop_m =</span> pop <span class="sc">/</span> <span class="fl">1e6</span>,</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">gdp_m =</span> gdpPercap<span class="sc">*</span>pop<span class="sc">/</span><span class="fl">1e6</span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; # A tibble: 1,704 × 8
+#&gt;    country     continent  year lifeExp      pop gdpPercap pop_m  gdp_m
+#&gt;    &lt;fct&gt;       &lt;fct&gt;     &lt;int&gt;   &lt;dbl&gt;    &lt;int&gt;     &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;
+#&gt;  1 Afghanistan Asia       1952    28.8  8425333      779.  8.43  6567.
+#&gt;  2 Afghanistan Asia       1957    30.3  9240934      821.  9.24  7585.
+#&gt;  3 Afghanistan Asia       1962    32.0 10267083      853. 10.3   8759.
+#&gt;  4 Afghanistan Asia       1967    34.0 11537966      836. 11.5   9648.
+#&gt;  5 Afghanistan Asia       1972    36.1 13079460      740. 13.1   9679.
+#&gt;  6 Afghanistan Asia       1977    38.4 14880372      786. 14.9  11698.
+#&gt;  7 Afghanistan Asia       1982    39.9 12881816      978. 12.9  12599.
+#&gt;  8 Afghanistan Asia       1987    40.8 13867957      852. 13.9  11821.
+#&gt;  9 Afghanistan Asia       1992    41.7 16317921      649. 16.3  10596.
+#&gt; 10 Afghanistan Asia       1997    41.8 22227415      635. 22.2  14122.
+#&gt; # … with 1,694 more rows</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-7-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-7-2-tab">
+<p>We use <code>assign</code> method from <code>pandas</code> package.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>gapminder.assign(</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  pop_m <span class="op">=</span> <span class="kw">lambda</span> df: df[<span class="st">'pop'</span>]<span class="op">/</span><span class="fl">1e6</span>,</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>  gdp_m <span class="op">=</span> <span class="kw">lambda</span> df: df[<span class="st">'gdpPercap'</span>]<span class="op">*</span>df[<span class="st">'pop'</span>]<span class="op">/</span><span class="fl">1e6</span></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt;           country continent  year  ...   gdpPercap      pop_m        gdp_m
+#&gt; 0     Afghanistan      Asia  1952  ...  779.445314   8.425333  6567.086330
+#&gt; 1     Afghanistan      Asia  1957  ...  820.853030   9.240934  7585.448670
+#&gt; 2     Afghanistan      Asia  1962  ...  853.100710  10.267083  8758.855797
+#&gt; 3     Afghanistan      Asia  1967  ...  836.197138  11.537966  9648.014150
+#&gt; 4     Afghanistan      Asia  1972  ...  739.981106  13.079460  9678.553274
+#&gt; ...           ...       ...   ...  ...         ...        ...          ...
+#&gt; 1699     Zimbabwe    Africa  1987  ...  706.157306   9.216418  6508.240905
+#&gt; 1700     Zimbabwe    Africa  1992  ...  693.420786  10.704340  7422.611852
+#&gt; 1701     Zimbabwe    Africa  1997  ...  792.449960  11.404948  9037.850590
+#&gt; 1702     Zimbabwe    Africa  2002  ...  672.038623  11.926563  8015.110972
+#&gt; 1703     Zimbabwe    Africa  2007  ...  469.709298  12.311143  5782.658337
+#&gt; 
+#&gt; [1704 rows x 8 columns]</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="arranging-rows-by-variables" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> Arranging rows by variables</h1>
+<p>Often, we have to sort or rearrange rows by values of particular columns to help us better understanding of data. We can sort from lower to larger (ascending) or the opposite (descending). Also multiple columns can be sorted. In this tutorial, we illustrate two cases</p>
+<ul>
+<li>sort <code>gapminder</code> by <code>continent</code> and <code>country</code> ascending.</li>
+<li>sort <code>gapminder</code> by <code>year</code> descending and <code>continent</code> ascending.</li>
+</ul>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-8-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-8-1" role="tab" aria-controls="tabset-8-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-8-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-8-2" role="tab" aria-controls="tabset-8-2" aria-selected="false">python</a></li></ul>
+<div class="tab-content">
+<div id="tabset-8-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-8-1-tab">
+<p>We use <code>arrange</code> from <code>dplyr</code> package. Default mode of sorting is ascending, if we want to sort descending, use <code>desc(variable)</code> syntax.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>gapminder <span class="sc">|&gt;</span> <span class="fu">arrange</span>(continent, country)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; # A tibble: 1,704 × 6
+#&gt;    country continent  year lifeExp      pop gdpPercap
+#&gt;    &lt;fct&gt;   &lt;fct&gt;     &lt;int&gt;   &lt;dbl&gt;    &lt;int&gt;     &lt;dbl&gt;
+#&gt;  1 Algeria Africa     1952    43.1  9279525     2449.
+#&gt;  2 Algeria Africa     1957    45.7 10270856     3014.
+#&gt;  3 Algeria Africa     1962    48.3 11000948     2551.
+#&gt;  4 Algeria Africa     1967    51.4 12760499     3247.
+#&gt;  5 Algeria Africa     1972    54.5 14760787     4183.
+#&gt;  6 Algeria Africa     1977    58.0 17152804     4910.
+#&gt;  7 Algeria Africa     1982    61.4 20033753     5745.
+#&gt;  8 Algeria Africa     1987    65.8 23254956     5681.
+#&gt;  9 Algeria Africa     1992    67.7 26298373     5023.
+#&gt; 10 Algeria Africa     1997    69.2 29072015     4797.
+#&gt; # … with 1,694 more rows</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>gapminder <span class="sc">|&gt;</span> <span class="fu">arrange</span>(<span class="fu">desc</span>(year), continent)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; # A tibble: 1,704 × 6
+#&gt;    country                  continent  year lifeExp      pop gdpPercap
+#&gt;    &lt;fct&gt;                    &lt;fct&gt;     &lt;int&gt;   &lt;dbl&gt;    &lt;int&gt;     &lt;dbl&gt;
+#&gt;  1 Algeria                  Africa     2007    72.3 33333216     6223.
+#&gt;  2 Angola                   Africa     2007    42.7 12420476     4797.
+#&gt;  3 Benin                    Africa     2007    56.7  8078314     1441.
+#&gt;  4 Botswana                 Africa     2007    50.7  1639131    12570.
+#&gt;  5 Burkina Faso             Africa     2007    52.3 14326203     1217.
+#&gt;  6 Burundi                  Africa     2007    49.6  8390505      430.
+#&gt;  7 Cameroon                 Africa     2007    50.4 17696293     2042.
+#&gt;  8 Central African Republic Africa     2007    44.7  4369038      706.
+#&gt;  9 Chad                     Africa     2007    50.7 10238807     1704.
+#&gt; 10 Comoros                  Africa     2007    65.2   710960      986.
+#&gt; # … with 1,694 more rows</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-8-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-8-2-tab">
+<p>We use <code>sort_values</code> method from <code>pandas</code> package. Default mode of sorting is ascending, if we want to sort descending, use ascending arguements.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>gapminder.sort_values([<span class="st">"continent"</span>, <span class="st">"country"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt;           country continent  year  lifeExp       pop     gdpPercap
+#&gt; 24        Algeria    Africa  1952   43.077   9279525   2449.008185
+#&gt; 25        Algeria    Africa  1957   45.685  10270856   3013.976023
+#&gt; 26        Algeria    Africa  1962   48.303  11000948   2550.816880
+#&gt; 27        Algeria    Africa  1967   51.407  12760499   3246.991771
+#&gt; 28        Algeria    Africa  1972   54.518  14760787   4182.663766
+#&gt; ...           ...       ...   ...      ...       ...           ...
+#&gt; 1099  New Zealand   Oceania  1987   74.320   3317166  19007.191290
+#&gt; 1100  New Zealand   Oceania  1992   76.330   3437674  18363.324940
+#&gt; 1101  New Zealand   Oceania  1997   77.550   3676187  21050.413770
+#&gt; 1102  New Zealand   Oceania  2002   79.110   3908037  23189.801350
+#&gt; 1103  New Zealand   Oceania  2007   80.204   4115771  25185.009110
+#&gt; 
+#&gt; [1704 rows x 6 columns]</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>gapminder.sort_values([<span class="st">"year"</span>, <span class="st">"continent"</span>], ascending<span class="op">=</span>[<span class="va">True</span>, <span class="va">False</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt;           country continent  year  lifeExp       pop     gdpPercap
+#&gt; 60      Australia   Oceania  1952   69.120   8691212  10039.595640
+#&gt; 1092  New Zealand   Oceania  1952   69.390   1994794  10556.575660
+#&gt; 12        Albania    Europe  1952   55.230   1282697   1601.056136
+#&gt; 72        Austria    Europe  1952   66.800   6927772   6137.076492
+#&gt; 108       Belgium    Europe  1952   68.000   8730405   8343.105127
+#&gt; ...           ...       ...   ...      ...       ...           ...
+#&gt; 1547         Togo    Africa  2007   58.420   5701579    882.969944
+#&gt; 1571      Tunisia    Africa  2007   73.923  10276158   7092.923025
+#&gt; 1595       Uganda    Africa  2007   51.542  29170398   1056.380121
+#&gt; 1691       Zambia    Africa  2007   42.384  11746035   1271.211593
+#&gt; 1703     Zimbabwe    Africa  2007   43.487  12311143    469.709298
+#&gt; 
+#&gt; [1704 rows x 6 columns]</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="summarizing-and-grouping" class="level1" data-number="9">
+<h1 data-number="9"><span class="header-section-number">9</span> Summarizing and Grouping</h1>
+<p>As data is huge, we need a way or a measure that let us have a better understanding about data. One way is to condense information into some sort of summary statistics i.e.&nbsp;average, min, max, sum, count, etc. These operations are basically reduce the number of rows. In addition, We can summaize data by group (categorial data). In <code>gapminder</code>, we will show how to do it without group and with group(s).</p>
+<section id="without-group" class="level2" data-number="9.1">
+<h2 data-number="9.1" class="anchored" data-anchor-id="without-group"><span class="header-section-number">9.1</span> without group</h2>
+<p>We want to find population total and population mean (in millions) of all countries and from 1952 - 2007.</p>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-9-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-9-1" role="tab" aria-controls="tabset-9-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-9-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-9-2" role="tab" aria-controls="tabset-9-2" aria-selected="false">python</a></li></ul>
+<div class="tab-content">
+<div id="tabset-9-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-9-1-tab">
+<p>We use <code>summarize</code> or <code>summarise</code> from <code>dplyr</code> package. It can use to make multiple summarized variables in single function call.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>gapminder <span class="sc">|&gt;</span> <span class="fu">summarize</span>(</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">pop_total_m =</span> <span class="fu">sum</span>(pop)<span class="sc">/</span><span class="fl">1e6</span>,</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">pop_mean_m =</span> <span class="fu">mean</span>(pop)<span class="sc">/</span><span class="fl">1e6</span></span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; # A tibble: 1 × 2
+#&gt;   pop_total_m pop_mean_m
+#&gt;         &lt;dbl&gt;      &lt;dbl&gt;
+#&gt; 1      50440.       29.6</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-9-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-9-2-tab">
+<p>We use <code>assign</code> method from <code>pandas</code> package. Alternative approach is to compute each summarization.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>gapminder[<span class="st">"pop"</span>].agg([<span class="st">"sum"</span>, <span class="st">"mean"</span>])<span class="op">/</span><span class="fl">1e6</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a><span class="co"># alternative</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; sum     50440.465801
+#&gt; mean       29.601212
+#&gt; Name: pop, dtype: float64</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>gapminder[<span class="st">"pop"</span>].<span class="bu">sum</span>()<span class="op">/</span><span class="fl">1e6</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; 50440.465801</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>gapminder[<span class="st">"pop"</span>].mean()<span class="op">/</span><span class="fl">1e6</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; 29.601212324530515</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="by-groups" class="level2" data-number="9.2">
+<h2 data-number="9.2" class="anchored" data-anchor-id="by-groups"><span class="header-section-number">9.2</span> by groups</h2>
+<p>We want to find population total and population mean (in millions) of all countries and from 1952 - 2007.</p>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-10-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-10-1" role="tab" aria-controls="tabset-10-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-10-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-10-2" role="tab" aria-controls="tabset-10-2" aria-selected="false">python</a></li></ul>
+<div class="tab-content">
+<div id="tabset-10-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-10-1-tab">
+<p>We use <code>group_by</code> from <code>dplyr</code> package before use <code>summarize</code> function. The result is grouped dataframe. I normally <code>ungroup</code> it to normal dataframe.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>gapminder <span class="sc">|&gt;</span></span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(continent, year) <span class="sc">|&gt;</span></span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">pop_min_m =</span> <span class="fu">min</span>(pop)<span class="sc">/</span><span class="fl">1e6</span>,</span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">pop_max_m =</span> <span class="fu">max</span>(pop)<span class="sc">/</span><span class="fl">1e6</span></span>
+<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> <span class="fu">ungroup</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; # A tibble: 60 × 4
+#&gt;    continent  year pop_min_m pop_max_m
+#&gt;    &lt;fct&gt;     &lt;int&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+#&gt;  1 Africa     1952    0.0600      33.1
+#&gt;  2 Africa     1957    0.0613      37.2
+#&gt;  3 Africa     1962    0.0653      41.9
+#&gt;  4 Africa     1967    0.0708      47.3
+#&gt;  5 Africa     1972    0.0766      53.7
+#&gt;  6 Africa     1977    0.0868      62.2
+#&gt;  7 Africa     1982    0.0986      73.0
+#&gt;  8 Africa     1987    0.111       81.6
+#&gt;  9 Africa     1992    0.126       93.4
+#&gt; 10 Africa     1997    0.146      106. 
+#&gt; # … with 50 more rows</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-10-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-10-2-tab">
+<p>We use <code>groupby</code> method from <code>pandas</code> package by putting it before <code>agg</code> method.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>gapminder.groupby(by<span class="op">=</span>[<span class="st">"continent"</span>, <span class="st">"year"</span>])[<span class="st">"pop"</span>].agg([<span class="st">"min"</span>, <span class="st">"max"</span>])<span class="op">/</span><span class="fl">1e6</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt;                      min          max
+#&gt; continent year                       
+#&gt; Africa    1952  0.060011    33.119096
+#&gt;           1957  0.061325    37.173340
+#&gt;           1962  0.065345    41.871351
+#&gt;           1967  0.070787    47.287752
+#&gt;           1972  0.076595    53.740085
+#&gt;           1977  0.086796    62.209173
+#&gt;           1982  0.098593    73.039376
+#&gt;           1987  0.110812    81.551520
+#&gt;           1992  0.125911    93.364244
+#&gt;           1997  0.145608   106.207839
+#&gt;           2002  0.170372   119.901274
+#&gt;           2007  0.199579   135.031164
+#&gt; Americas  1952  0.662850   157.553000
+#&gt;           1957  0.764900   171.984000
+#&gt;           1962  0.887498   186.538000
+#&gt;           1967  0.960155   198.712000
+#&gt;           1972  0.975199   209.896000
+#&gt;           1977  1.039009   220.239000
+#&gt;           1982  1.116479   232.187835
+#&gt;           1987  1.191336   242.803533
+#&gt;           1992  1.183669   256.894189
+#&gt;           1997  1.138101   272.911760
+#&gt;           2002  1.101832   287.675526
+#&gt;           2007  1.056608   301.139947
+#&gt; Asia      1952  0.120447   556.263527
+#&gt;           1957  0.138655   637.408000
+#&gt;           1962  0.171863   665.770000
+#&gt;           1967  0.202182   754.550000
+#&gt;           1972  0.230800   862.030000
+#&gt;           1977  0.297410   943.455000
+#&gt;           1982  0.377967  1000.281000
+#&gt;           1987  0.454612  1084.035000
+#&gt;           1992  0.529491  1164.970000
+#&gt;           1997  0.598561  1230.075000
+#&gt;           2002  0.656397  1280.400000
+#&gt;           2007  0.708573  1318.683096
+#&gt; Europe    1952  0.147962    69.145952
+#&gt;           1957  0.165110    71.019069
+#&gt;           1962  0.182053    73.739117
+#&gt;           1967  0.198676    76.368453
+#&gt;           1972  0.209275    78.717088
+#&gt;           1977  0.221823    78.160773
+#&gt;           1982  0.233997    78.335266
+#&gt;           1987  0.244676    77.718298
+#&gt;           1992  0.259012    80.597764
+#&gt;           1997  0.271192    82.011073
+#&gt;           2002  0.288030    82.350671
+#&gt;           2007  0.301931    82.400996
+#&gt; Oceania   1952  1.994794     8.691212
+#&gt;           1957  2.229407     9.712569
+#&gt;           1962  2.488550    10.794968
+#&gt;           1967  2.728150    11.872264
+#&gt;           1972  2.929100    13.177000
+#&gt;           1977  3.164900    14.074100
+#&gt;           1982  3.210650    15.184200
+#&gt;           1987  3.317166    16.257249
+#&gt;           1992  3.437674    17.481977
+#&gt;           1997  3.676187    18.565243
+#&gt;           2002  3.908037    19.546792
+#&gt;           2007  4.115771    20.434176</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="reshaping-table" class="level1" data-number="10">
+<h1 data-number="10"><span class="header-section-number">10</span> Reshaping table</h1>
+<p>Reshaping is used we want to change the way data is presenting. There are <code>wide</code> format and <code>long</code> format.</p>
+<ul>
+<li><code>wide</code> format is a format that have more columns but less rows. Good for making report orpresenting data.</li>
+<li><code>long</code> format is a format that have less columns but more rows. Good for data management, data warehousing.</li>
+</ul>
+<p>We can convert back and forth as needed. For <code>excel</code> user, it is the famous pivot-table function.</p>
+<section id="pivot-wider" class="level2" data-number="10.1">
+<h2 data-number="10.1" class="anchored" data-anchor-id="pivot-wider"><span class="header-section-number">10.1</span> Pivot wider</h2>
+<p>Convert from long format to wide format. In this tutorial, we want to make a report of each country of life extectancy by years where we want each year to be a column. We can achieve this by pivot <code>gapminder</code> to wide format.</p>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-11-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-11-1" role="tab" aria-controls="tabset-11-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-11-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-11-2" role="tab" aria-controls="tabset-11-2" aria-selected="false">python</a></li></ul>
+<div class="tab-content">
+<div id="tabset-11-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-11-1-tab">
+<p>We use <code>pivot_wider</code> from <code>tidyr</code> package.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>gapminder <span class="sc">|&gt;</span> <span class="fu">pivot_wider</span>(</span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">id_cols =</span> <span class="fu">c</span>(<span class="st">"continent"</span>, <span class="st">"country"</span>), </span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">names_from =</span> <span class="st">"year"</span>,</span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">values_from =</span> <span class="st">"lifeExp"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; # A tibble: 142 × 14
+#&gt;    continent country     `1952` `1957` `1962` `1967` `1972` `1977` `1982` `1987`
+#&gt;    &lt;fct&gt;     &lt;fct&gt;        &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+#&gt;  1 Asia      Afghanistan   28.8   30.3   32.0   34.0   36.1   38.4   39.9   40.8
+#&gt;  2 Europe    Albania       55.2   59.3   64.8   66.2   67.7   68.9   70.4   72  
+#&gt;  3 Africa    Algeria       43.1   45.7   48.3   51.4   54.5   58.0   61.4   65.8
+#&gt;  4 Africa    Angola        30.0   32.0   34     36.0   37.9   39.5   39.9   39.9
+#&gt;  5 Americas  Argentina     62.5   64.4   65.1   65.6   67.1   68.5   69.9   70.8
+#&gt;  6 Oceania   Australia     69.1   70.3   70.9   71.1   71.9   73.5   74.7   76.3
+#&gt;  7 Europe    Austria       66.8   67.5   69.5   70.1   70.6   72.2   73.2   74.9
+#&gt;  8 Asia      Bahrain       50.9   53.8   56.9   59.9   63.3   65.6   69.1   70.8
+#&gt;  9 Asia      Bangladesh    37.5   39.3   41.2   43.5   45.3   46.9   50.0   52.8
+#&gt; 10 Europe    Belgium       68     69.2   70.2   70.9   71.4   72.8   73.9   75.4
+#&gt; # … with 132 more rows, and 4 more variables: `1992` &lt;dbl&gt;, `1997` &lt;dbl&gt;,
+#&gt; #   `2002` &lt;dbl&gt;, `2007` &lt;dbl&gt;</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-11-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-11-2-tab">
+<p>We use <code>pivot</code> method from <code>pandas</code> package.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>gapminder.pivot(</span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>  index <span class="op">=</span> [<span class="st">"continent"</span>, <span class="st">"country"</span>], </span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>  columns <span class="op">=</span> <span class="st">"year"</span>, </span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a>  values <span class="op">=</span> <span class="st">"lifeExp"</span></span>
+<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; year                        1952    1957    1962  ...    1997    2002    2007
+#&gt; continent country                                 ...                        
+#&gt; Africa    Algeria         43.077  45.685  48.303  ...  69.152  70.994  72.301
+#&gt;           Angola          30.015  31.999  34.000  ...  40.963  41.003  42.731
+#&gt;           Benin           38.223  40.358  42.618  ...  54.777  54.406  56.728
+#&gt;           Botswana        47.622  49.618  51.520  ...  52.556  46.634  50.728
+#&gt;           Burkina Faso    31.975  34.906  37.814  ...  50.324  50.650  52.295
+#&gt; ...                          ...     ...     ...  ...     ...     ...     ...
+#&gt; Europe    Switzerland     69.620  70.560  71.320  ...  79.370  80.620  81.701
+#&gt;           Turkey          43.585  48.079  52.098  ...  68.835  70.845  71.777
+#&gt;           United Kingdom  69.180  70.420  70.760  ...  77.218  78.471  79.425
+#&gt; Oceania   Australia       69.120  70.330  70.930  ...  78.830  80.370  81.235
+#&gt;           New Zealand     69.390  70.260  71.240  ...  77.550  79.110  80.204
+#&gt; 
+#&gt; [142 rows x 12 columns]</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="pivot-longer" class="level2" data-number="10.2">
+<h2 data-number="10.2" class="anchored" data-anchor-id="pivot-longer"><span class="header-section-number">10.2</span> Pivot longer</h2>
+<p>Convert from wide format to long format. In this tutorial, we want to normalize <code>gapminder</code> table by moving measurment variables including <code>lifeExp</code> <code>pop</code> and <code>gdpPercap</code> columns into longer format where there is a column to store the variable name and a column store their value. We can achieve this by pivot <code>gapminder</code> to long format.</p>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-12-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-12-1" role="tab" aria-controls="tabset-12-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-12-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-12-2" role="tab" aria-controls="tabset-12-2" aria-selected="false">python</a></li></ul>
+<div class="tab-content">
+<div id="tabset-12-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-12-1-tab">
+<p>We use <code>pivot_longer</code> from <code>tidyr</code> package.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>gapminder <span class="sc">|&gt;</span> <span class="fu">pivot_longer</span>(</span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">cols =</span> <span class="fu">c</span>(<span class="st">"lifeExp"</span>, <span class="st">"pop"</span>, <span class="st">"gdpPercap"</span>), </span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">names_to  =</span> <span class="st">"variable"</span>,</span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">values_to =</span> <span class="st">"value"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; # A tibble: 5,112 × 5
+#&gt;    country     continent  year variable       value
+#&gt;    &lt;fct&gt;       &lt;fct&gt;     &lt;int&gt; &lt;chr&gt;          &lt;dbl&gt;
+#&gt;  1 Afghanistan Asia       1952 lifeExp         28.8
+#&gt;  2 Afghanistan Asia       1952 pop        8425333  
+#&gt;  3 Afghanistan Asia       1952 gdpPercap      779. 
+#&gt;  4 Afghanistan Asia       1957 lifeExp         30.3
+#&gt;  5 Afghanistan Asia       1957 pop        9240934  
+#&gt;  6 Afghanistan Asia       1957 gdpPercap      821. 
+#&gt;  7 Afghanistan Asia       1962 lifeExp         32.0
+#&gt;  8 Afghanistan Asia       1962 pop       10267083  
+#&gt;  9 Afghanistan Asia       1962 gdpPercap      853. 
+#&gt; 10 Afghanistan Asia       1967 lifeExp         34.0
+#&gt; # … with 5,102 more rows</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-12-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-12-2-tab">
+<p>We use <code>melt</code> method from <code>pandas</code> package.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>gapminder.melt(</span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>  id_vars <span class="op">=</span> [<span class="st">"country"</span>, <span class="st">"continent"</span>, <span class="st">"year"</span>],</span>
+<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a>  value_vars <span class="op">=</span> [<span class="st">"lifeExp"</span>, <span class="st">"pop"</span>, <span class="st">"gdpPercap"</span>], </span>
+<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a>  var_name <span class="op">=</span> <span class="st">"variable"</span>, </span>
+<span id="cb59-5"><a href="#cb59-5" aria-hidden="true" tabindex="-1"></a>  value_name <span class="op">=</span> <span class="st">"value"</span></span>
+<span id="cb59-6"><a href="#cb59-6" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt;           country continent  year   variable       value
+#&gt; 0     Afghanistan      Asia  1952    lifeExp   28.801000
+#&gt; 1     Afghanistan      Asia  1957    lifeExp   30.332000
+#&gt; 2     Afghanistan      Asia  1962    lifeExp   31.997000
+#&gt; 3     Afghanistan      Asia  1967    lifeExp   34.020000
+#&gt; 4     Afghanistan      Asia  1972    lifeExp   36.088000
+#&gt; ...           ...       ...   ...        ...         ...
+#&gt; 5107     Zimbabwe    Africa  1987  gdpPercap  706.157306
+#&gt; 5108     Zimbabwe    Africa  1992  gdpPercap  693.420786
+#&gt; 5109     Zimbabwe    Africa  1997  gdpPercap  792.449960
+#&gt; 5110     Zimbabwe    Africa  2002  gdpPercap  672.038623
+#&gt; 5111     Zimbabwe    Africa  2007  gdpPercap  469.709298
+#&gt; 
+#&gt; [5112 rows x 5 columns]</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="join-tables" class="level1" data-number="11">
+<h1 data-number="11"><span class="header-section-number">11</span> Join tables</h1>
+<p>We join tables together to enrich data i.e.&nbsp;adding new variables from other table or adding metadata from reference tables. In this tutorial, we add country codes to <code>gapminder</code> dataset.</p>
+<p>Like SQL-join, there are many types of join. In this tutorial, we illustrate left-join where the left table rows are preserved and add only matched data from right table.</p>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-13-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-13-1" role="tab" aria-controls="tabset-13-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-13-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-13-2" role="tab" aria-controls="tabset-13-2" aria-selected="false">python</a></li></ul>
+<div class="tab-content">
+<div id="tabset-13-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-13-1-tab">
+<p>We use <code>pivot_wider</code> from <code>tidyr</code> package.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>gapminder <span class="sc">|&gt;</span> <span class="fu">left_join</span>(country_codes, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"country"</span> <span class="ot">=</span> <span class="st">"country"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; # A tibble: 1,704 × 8
+#&gt;    country     continent  year lifeExp      pop gdpPercap iso_alpha iso_num
+#&gt;    &lt;chr&gt;       &lt;fct&gt;     &lt;int&gt;   &lt;dbl&gt;    &lt;int&gt;     &lt;dbl&gt; &lt;chr&gt;       &lt;dbl&gt;
+#&gt;  1 Afghanistan Asia       1952    28.8  8425333      779. AFG             4
+#&gt;  2 Afghanistan Asia       1957    30.3  9240934      821. AFG             4
+#&gt;  3 Afghanistan Asia       1962    32.0 10267083      853. AFG             4
+#&gt;  4 Afghanistan Asia       1967    34.0 11537966      836. AFG             4
+#&gt;  5 Afghanistan Asia       1972    36.1 13079460      740. AFG             4
+#&gt;  6 Afghanistan Asia       1977    38.4 14880372      786. AFG             4
+#&gt;  7 Afghanistan Asia       1982    39.9 12881816      978. AFG             4
+#&gt;  8 Afghanistan Asia       1987    40.8 13867957      852. AFG             4
+#&gt;  9 Afghanistan Asia       1992    41.7 16317921      649. AFG             4
+#&gt; 10 Afghanistan Asia       1997    41.8 22227415      635. AFG             4
+#&gt; # … with 1,694 more rows</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-13-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-13-2-tab">
+<p>We use <code>merge</code> method from <code>pandas</code> package.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a>pd.merge(</span>
+<span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a>  gapminder, country_codes,</span>
+<span id="cb63-4"><a href="#cb63-4" aria-hidden="true" tabindex="-1"></a>  how <span class="op">=</span> <span class="st">"left"</span>,</span>
+<span id="cb63-5"><a href="#cb63-5" aria-hidden="true" tabindex="-1"></a>  left_on <span class="op">=</span> <span class="st">"country"</span>,</span>
+<span id="cb63-6"><a href="#cb63-6" aria-hidden="true" tabindex="-1"></a>  right_on <span class="op">=</span> <span class="st">"country"</span></span>
+<span id="cb63-7"><a href="#cb63-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt;           country continent  year  ...   gdpPercap  iso_alpha  iso_num
+#&gt; 0     Afghanistan      Asia  1952  ...  779.445314        AFG        4
+#&gt; 1     Afghanistan      Asia  1957  ...  820.853030        AFG        4
+#&gt; 2     Afghanistan      Asia  1962  ...  853.100710        AFG        4
+#&gt; 3     Afghanistan      Asia  1967  ...  836.197138        AFG        4
+#&gt; 4     Afghanistan      Asia  1972  ...  739.981106        AFG        4
+#&gt; ...           ...       ...   ...  ...         ...        ...      ...
+#&gt; 1699     Zimbabwe    Africa  1987  ...  706.157306        ZWE      716
+#&gt; 1700     Zimbabwe    Africa  1992  ...  693.420786        ZWE      716
+#&gt; 1701     Zimbabwe    Africa  1997  ...  792.449960        ZWE      716
+#&gt; 1702     Zimbabwe    Africa  2002  ...  672.038623        ZWE      716
+#&gt; 1703     Zimbabwe    Africa  2007  ...  469.709298        ZWE      716
+#&gt; 
+#&gt; [1704 rows x 8 columns]</code></pre>
+</div>
+</div>
+<ul>
+<li>when both tables have the same key column name, can use only argument on</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>pd.merge(</span>
+<span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a>  gapminder, country_codes,</span>
+<span id="cb65-3"><a href="#cb65-3" aria-hidden="true" tabindex="-1"></a>  how <span class="op">=</span> <span class="st">"left"</span>,</span>
+<span id="cb65-4"><a href="#cb65-4" aria-hidden="true" tabindex="-1"></a>  on <span class="op">=</span> <span class="st">"country"</span></span>
+<span id="cb65-5"><a href="#cb65-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="conclusion-remarks" class="level1" data-number="12">
+<h1 data-number="12"><span class="header-section-number">12</span> Conclusion Remarks</h1>
+<p>There are many topics that do not cover in this tutorial i.e.&nbsp;<code>date</code> and <code>datetime</code>, <code>categorial</code>, <code>text</code>, panel data, missing data, advance group statistics, etc. Hope this tutorial help you get start with using programming language like <code>R</code> and <code>python</code> to do data manipulation task.</p>
+<section id="useful-resource" class="level2" data-number="12.1">
+<h2 data-number="12.1" class="anchored" data-anchor-id="useful-resource"><span class="header-section-number">12.1</span> Useful resource:</h2>
+<ul>
+<li><a href="https://homepage.divms.uiowa.edu/~luke/classes/STAT4580/dplyr.html#grouped-mutate-and-filter" class="uri">https://homepage.divms.uiowa.edu/~luke/classes/STAT4580/dplyr.html#grouped-mutate-and-filter</a></li>
+<li><a href="https://dplyr.tidyverse.org" class="uri">https://dplyr.tidyverse.org</a></li>
+<li><a href="https://tidyr.tidyverse.org/" class="uri">https://tidyr.tidyverse.org/</a></li>
+<li><a href="https://r4ds.had.co.nz/" class="uri">https://r4ds.had.co.nz/</a></li>
+<li><a href="https://wesmckinney.com/book/" class="uri">https://wesmckinney.com/book/</a></li>
+<li><a href="https://www.rstudio.com/resources/cheatsheets/" class="uri">https://www.rstudio.com/resources/cheatsheets/</a></li>
+<li><a href="https://pandas.pydata.org/Pandas_Cheat_Sheet.pdf" class="uri">https://pandas.pydata.org/Pandas_Cheat_Sheet.pdf</a></li>
+</ul>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+<script src="https://utteranc.es/client.js" repo="piyayut-ch/piyayut" issue-term="pathname" theme="github-light" crossorigin="anonymous" async="">
+</script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+      <div class="nav-footer-center"><div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookie Preferences</a></div></div>
+  </div>
+</footer>
+
+
+
+</body></html>

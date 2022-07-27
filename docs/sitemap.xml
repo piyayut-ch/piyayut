@@ -2,22 +2,26 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://piyayut-ch.github.io/piyayut/about.html</loc>
-    <lastmod>2022-07-10T10:45:48.640Z</lastmod>
+    <lastmod>2022-07-27T22:41:23.505Z</lastmod>
   </url>
   <url>
     <loc>https://piyayut-ch.github.io/piyayut/index.html</loc>
-    <lastmod>2022-07-10T10:45:49.542Z</lastmod>
+    <lastmod>2022-07-27T22:47:53.775Z</lastmod>
   </url>
   <url>
     <loc>https://piyayut-ch.github.io/piyayut/posts/2022-07-09_quarto-blog/index.html</loc>
-    <lastmod>2022-07-10T10:45:51.332Z</lastmod>
+    <lastmod>2022-07-27T22:41:25.084Z</lastmod>
+  </url>
+  <url>
+    <loc>https://piyayut-ch.github.io/piyayut/posts/2022-07-28_data_manipulation_basic/index.html</loc>
+    <lastmod>2022-07-27T22:47:56.967Z</lastmod>
   </url>
   <url>
     <loc>https://piyayut-ch.github.io/piyayut/projects/mapthai/index.html</loc>
-    <lastmod>2022-07-10T10:45:53.040Z</lastmod>
+    <lastmod>2022-07-27T22:41:28.903Z</lastmod>
   </url>
   <url>
     <loc>https://piyayut-ch.github.io/piyayut/projects.html</loc>
-    <lastmod>2022-07-10T10:45:53.503Z</lastmod>
+    <lastmod>2022-07-27T22:41:29.279Z</lastmod>
   </url>
 </urlset>

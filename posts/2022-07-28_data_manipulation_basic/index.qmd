@@ -110,13 +110,14 @@ There are many file types, in this tutorial chooses the most common ones
 
 
 ## csv
-CSV is a text file that each columns are seperated by commas stored in `.csv` file extension. Aside from `csv`, there are similar text file that store spreadsheet data but used different seperator or fixed width to determine column by position.
+CSV is a text file that each columns are seperated by commas stored in `.csv` file extension. Aside from `csv`, there are similar text file that store spreadsheet data but used different seperator or fixed width to determine column by position. `gapminder.csv` file can be downloaded [here](https://raw.githubusercontent.com/piyayut-ch/piyayut/main/posts/2022-07-28_data_manipulation_basic/gapminder.csv).
 
 ::: {.panel-tabset}
 ### R
 We use function `read_csv` from `readr` package.
 ```{r}
-gapminder <- read_csv("gapminder.csv", show_col_types = FALSE) # readr package
+gapminder <- read_csv("gapminder.csv", show_col_types = FALSE)
+# you can use file path in your local machine or url path.
 gapminder
 ```
 ::: {.callout-note}
@@ -133,7 +134,7 @@ gapminder
 
 
 ## excel
-MS excel is a spreadsheet program and store data in `.xls` (2003 version and before) or `.xlsx`. They are not text files like `csv`, but they are a kind of binary files (XML-like) format. An excel file can contain multiple sheets and within each sheet can have multiple tables.
+MS excel is a spreadsheet program and store data in `.xls` (2003 version and before) or `.xlsx`. They are not text files like `csv`, but they are a kind of binary files (XML-like) format. An excel file can contain multiple sheets and within each sheet can have multiple tables. `gapminder.xlsx` file can be downloaded [here](https://raw.githubusercontent.com/piyayut-ch/piyayut/main/posts/2022-07-28_data_manipulation_basic/gapminder.xlsx).
 
 :::{.callout-tip}
 Unstructured excel files are difficult to work with using programming. Excel are still widely used by many organizations, so at leaset, we should convince users to make a proper spreadsheet for example follow [Broman and Woo' guideline](https://www.biostat.wisc.edu/~kbroman/publications/dataorg.pdf).
@@ -185,6 +186,7 @@ Index in `python` starts with 0.
 
 ## parquet
 `Parquet` is an open file format that is great for speed and storage. Some organizeations have changed the way they sharing their data files to `parquet` instead of `csv`.
+`gapminder.parquet` file can be downloaded [here](https://raw.githubusercontent.com/piyayut-ch/piyayut/main/posts/2022-07-28_data_manipulation_basic/gapminder.parquet).
 
 ::: {.panel-tabset}
 ### R
@@ -457,10 +459,10 @@ There are many topics that do not cover in this tutorial i.e. `date` and `dateti
 
 ## Useful resource:
 
-- https://homepage.divms.uiowa.edu/~luke/classes/STAT4580/dplyr.html#grouped-mutate-and-filter
-- https://dplyr.tidyverse.org
-- https://tidyr.tidyverse.org/
-- https://r4ds.had.co.nz/
-- https://wesmckinney.com/book/
-- https://www.rstudio.com/resources/cheatsheets/
-- https://pandas.pydata.org/Pandas_Cheat_Sheet.pdf
+- <https://homepage.divms.uiowa.edu/~luke/classes/STAT4580/dplyr.html#grouped-mutate-and-filter>
+- <https://dplyr.tidyverse.org>
+- <https://tidyr.tidyverse.org/>
+- <https://r4ds.had.co.nz/>
+- <https://wesmckinney.com/book/>
+- <https://www.rstudio.com/resources/cheatsheets/>
+- <https://pandas.pydata.org/Pandas_Cheat_Sheet.pdf>

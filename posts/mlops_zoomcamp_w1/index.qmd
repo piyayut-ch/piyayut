@@ -1,0 +1,172 @@
+---
+title: "MLOps Zoomcamp Week 1"
+author: "Piyayut Chitchumnong"
+description: | 
+  My note on MLOps Zoomcamp - Week 1: Introduction
+date: "2022-07-13"
+categories: [MLOps]
+draft: true
+---
+
+# Introduction
+**MLOps** is set of best practices on putting machine learning (ML) models into production.
+
+In this course, we use an example where the goal is to **predict the duration of a taxi ride**.
+
+Three steps of ML life cycle
+
+1. **Design**: How to solve a problem in hand? Require ML or there are other simplier methods?
+2. **Train**: Collect data, experiment with multiple models and select the best possible model.
+3. **Operate**: Apply the best model to new data i.e. via web service API.
+
+
+# Environment Preparation
+The instructor show the way to use AWS. However, if you want to run on you local windows computer, you could follow
+
+- for windows, I use [powershell](https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.2) and [WSL](https://docs.microsoft.com/en-us/windows/wsl/install)
+
+```bash
+# in powershell, install wsl via
+wsl --install -d Ubuntu-20.04
+```
+
+- python install via miniconda
+```bash
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+bash Miniconda3-latest-Linux-x86_64.sh
+```
+
+- docker and docker-compose [official doc](https://docs.docker.com/engine/install/ubuntu/)
+```bash
+# update apt
+sudo apt-get update
+sudo apt-get install \
+    ca-certificates \
+    curl \
+    gnupg \
+    lsb-release
+
+# add gpg key
+sudo mkdir -p /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+
+# set up repo
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+# install
+sudo apt-get update
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
+```
+
+- docker-compose
+```bash
+mkdir soft
+cd soft
+wget https://github.com/docker/compose/releases/download/v2.6.1/docker-compose-linux-x86_64 -O docker-compose
+chmod +x docker-compose
+cd ..
+nano .bashrc
+source .bashrc
+```
+
+edit .bashrc
+```bash
+# .bashrc file add
+export PATH="${HOME}/soft:${PATH}"
+```
+
+```bash
+source .bashrc
+```
+
+- make docker run without sudo
+```bash
+sudo groupadd docker
+sudo usermod -aG docker $USER
+newgrp docker
+docker run hello-world
+```
+
+- git clone the mlops-zoomcamp repo
+```bash
+git clone https://github.com/DataTalksClub/mlops-zoomcamp.git
+```
+
+- create virtual environment for the project
+
+```bash
+conda create -n mlops python=3.9
+conda activate mlops
+pip install jupyterlab matplotlib pandas scikit-learn scikit-learn
+```
+
+
+# MLOps Overivew using duration prediction example
+
+- **Module 1**: Model Tranining
+A notebook is great for experiment but there are some limitation for production work. This course use an example of predicting duration of a taxi given pickup and destination location. Please see [Video link](https://www.youtube.com/watch?v=iRunifGSHFc&list=PL3MmuxUbc_hIUISrluw_A7wDSmfOhErJK&index=5) and [noteboook link](https://github.com/DataTalksClub/mlops-zoomcamp/blob/main/01-intro/duration-prediction.ipynb). Some notes about notebook.
+
+    - it is good practice to put all data into a seperated folder i.e. data. Be cautious about the path.
+    - data is in parquet format [link](https://www1.nyc.gov/site/tlc/about/tlc-trip-record-data.page), so you need `pyarrow` library.
+    - it is a good practice to make a function i.e. read data function.
+    - data type is important (numeric vs categorial) because they require different data processing and interpretation.
+    - after fitting the model, dump model and related files into pickle file.
+    - there is no perfect model for every problem, so we should try and compare a bunch of good candidates.
+
+
+- **Module 2**: Experiment Tracker and Model Registry
+When we experiment with different parameters and models, we could override the results and cannot keep tracks. A better approach is to use `experiment tracker` to help us keep track of experiment results for a particular model and `model registry` to help us distinguish between models. In this course will use `mlflow`
+
+- **Module 3**: ML Pipepline
+When we apply the ml in new data, we need to change some parameters in the notebook and it could be error-prone operation. So, there are tools and best practice to orchestrate this process i.e. `Prefect` and `Kubeflow`. The key is to breakdown into steps and make it a workflow.
+
+- **Module 4**: Serving
+Output of the MLpipeline is a model. We need to put a model in production (service) where other systems can send new data and get prediction back. There are many kinds of service i.e. batch vs online.
+
+- **Module 5**: Monitoring
+When model is in production, the model might not perform well. So, it is important to monitor the model performance, and send an alert to ML engineer or data scientist to investigate and retrain the model. Note that it is possible to automate the process by making the system retrain the model with new data using ML pipeline once the performance drop below some threshold. However, it is also depended on how much we trust the system to not fall apart without human intervention, this concept is called `model maturity`.
+
+- **Module 6**: Best practice
+This module is not related to the notebook, but it is essential to MLOps i.e. docker, and CI/CD. The idea is to automate the process as much as possible and it should be easy to maintain and deploy (test, document).
+
+- **Module 7**: Processes
+ML project involves many people and it is not about the code. This module will discuss about that i.e. ML Canvas
+
+# Model Maturity
+A short note from [Microsoft's article](https://docs.microsoft.com/en-us/azure/architecture/example-scenario/mlops/mlops-maturity-model) about different ML stages.
+- Level 0: No MLops
+    - No automation
+    - All code in jupyter notebook
+    - Good for POC stage
+- Level 1: DevOps, no MLOps
+    - Releases are automated (serving model as a web service)
+    - Follow best practice from software engineering (unit, integration tests, CI/CD, Ops metrics)
+    - Not specific to ML operation
+    - No experiment tracking
+    - No reporducibility
+    - DS team is seperated from engineering team
+    - Good for production stage
+- Level 2: Automated traning
+    - Training pipeline
+    - Experiment tracking
+    - Model registry
+    - Low friction deployment
+    - DS team work with engineering team
+    - Good for 2-3 models in production, should consider to invest in this stage.
+- Level 3: Automated deployment
+    - Easy to deploy model
+    - ML platform, that we can deploy model via code
+    - A/B test
+    - Model monitoring
+- Level 4: Fully MLOps automation
+    - Put all everything together in one environment or platform.
+
+> Note: Not all services require fully automated.
+
+
+# Resources:
+- [github repo](https://github.com/DataTalksClub/mlops-zoomcamp)
+- [MLOps Zoomcamp Youtube channel](https://www.youtube.com/playlist?list=PL3MmuxUbc_hIUISrluw_A7wDSmfOhErJK)
+- [NYC Taxi Data](https://www1.nyc.gov/site/tlc/about/tlc-trip-record-data.page)
