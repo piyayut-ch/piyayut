@@ -1,0 +1,563 @@
+---
+title: "How to make the animated gapminder chart using R and echarts"
+author: "Piyayut Chitchumnong"
+description: | 
+  A walkthrough of how to make the animated gapminder chart using R and echarts.
+date: "2022-07-30"
+categories: [tutorial, R, echarts, data-visualization, animation]
+execute: 
+  cache: false
+format:
+  html:
+    df-print: tibble
+knitr:
+  opts_chunk:
+    comment: "#>"
+---
+
+![](feature.gif)
+
+# Introduction
+In this blog post, I will go through step by step of how to create the above chart inspired by the famous [gapminder chart](https://www.gapminder.org/tools/#$chart-type=bubbles&url=v1) using `R` and [`echarts`](https://echarts.apache.org/en/index.html) via awesome [`echarts4r`](https://echarts4r.john-coene.com/index.html) package. Let's get start.
+
+## What is `echarts` ?
+`echarts` is an open-source `javascript` for interactive visualization project. Like others javascript visualization libraries, it requies `json` data and render into interactive visualization object.
+
+## What is `echarts4r`?
+`echarts4r` is R package developed by John Coene. `echarts4r` allow R users to generate `echarts` visualization by simply writing a R code. As John mentioned, `json` data is pretty much a `list` in `R` language. So the goal is to make a nested list that `echarts` required. `echarts4r` provide helper functions to create `echart` graphic. However, we can make our own `R` functions or arguements for full customization. See [`echarts` document.](https://echarts.apache.org/en/option.html#series)
+
+If you are new to `echarts4r`, please see [package document](https://echarts4r.john-coene.com/articles/get_started.html).
+
+# Step 0: Load packages
+First, we load required R packages as follows 
+```{r}
+# install package if you do not have them install.package
+library(gapminder)  # gapminder data
+library(echarts4r)  # make echarts using R
+library(dplyr, warn.conflicts = FALSE) # data manipulation
+library(purrr, warn.conflicts = FALSE) # functional programming
+library(listviewer) # view nested list
+```
+
+
+# Step 1: Initialize an echart with timeline
+`echarts4r` provides a function to create `timeline` component for visualizing time-related data. When we couple it with `annimation` component, we can create a visualization similar to `gapminder` that show how life expectancy and income per capita of individual countries have changed overtime.
+
+`echarts4r` use `group_by` from `dplyr` package before we initialize echarts via `e_charts` function.
+
+## Data
+First, let preview our data `gapminder`. There are 6 variables: `country`, `continent`, `year`, `LifeExp`, `pop`, and `gdpPercap`. It contains data from 142 countries ranging from 1952-2007.
+```{r}
+gapminder
+gapminder |> count(country)
+gapminder |> count(year)
+```
+
+## echarts and timeline
+Now, create an `echarts` object and assign to `p` variable. This will create an empty canvas with time slider. We also use `jsonedit` function from `listviewer` to see the nested list used by `echarts`. Note that we map `gdpPercap` to x axis.
+```{r}
+p <- gapminder |>
+  group_by(year) |>
+  e_charts(gdpPercap, timeline = TRUE)
+p
+
+# check object$x$data for data stored in echarts object
+# check object$x$opts$options for data used for visualization
+jsonedit(p)
+```
+
+As we can see, that `group_by` function divide `gapminder` dataframe by `year`, so there are 12 dataframes corresponding to a particular year. Explore the list via the result from `jsonedit`, check `object$x$data` and `object$x$opts$options`. We couls see that both have 12 elements. You can check the differences when we do not use `group_by`.
+
+```{r}
+p2 <- gapminder |>
+  e_charts(gdpPercap)
+p2
+
+# check object$x$data and object$x$opts$options
+jsonedit(p2)
+```
+
+
+# Step 2: Make a scatter plot
+Now, we make a scatter plot using `e_scatter` where we map `lifeExp` to y axis with serie argument. `size` argument is used to map `pop` variable to the size of bubbles where `symbol_size` is a scale factor. `bind` argument is used for link the data across time which is `country` in this case. We turn off `legend` because later we want to add color to represent `continent`. Lastly, `emphasis` argument is for highlight effect.
+```{r}
+p <- p |>
+  e_scatter(
+    serie = lifeExp,
+    size = pop,
+    symbol_size = 5,
+    bind = country,
+    legend = FALSE,
+    emphasis = list(focus = "self")
+  )
+p
+
+# check object$x$opts$baseOption$series
+jsonedit(p)
+```
+
+
+# Step 3: Adjust x and y axis
+As we can see from previous graph, we found some rooms for improvement.
+
+- `gdpPercap` is right-skewed, so rescale using log should help.
+- x and y axis have no axis title.
+- The range of x axis and y axis is changing as their values have increased overtime, so the min and max should be fixed.
+
+We can custom x and y axis using `e_x_axis` and `e_y_axis` function.
+
+```{r}
+p <- p |>
+  e_x_axis(
+    name = 'GDP per capita',
+    nameLocation = 'center',
+    type = "log",
+    min = 100,
+    max = 2e5,
+  ) |>
+  e_y_axis(
+    name = "Life Expectancy",
+    max = 100
+  )
+p
+
+# check object$x$opts$baseOption$xAxis and object$x$opts$baseOption$yAxis
+jsonedit(p)
+```
+
+# Step 4: Assign color to continent and create a legend
+Next, we want to use color to represent continent. This step is the most difficult part. First, I tried `e_add` function from `echarts4r` but it does not match my requirement. So, I make a new function called `e_add_value` function which is a modified version of `e_add` function. I will walkthrough the reason why I need another function to do the job.
+
+## `e_add`
+First, we use create a new column called `color` which has associated hex color for each continent. Then, we use `e_add_nested` by assigning `color` column to `itemStyle` keyword. Lastly, we turn on the legend using `e_legend(show = TRUE)`.
+
+```{r}
+# create a named vector for mapping continents to colors
+continent_colors <- c(
+  "Asia" = "#ff5872",
+  "Europe" = "#00d5e9",
+  "Africa" = "#009f3d",
+  "Americas" = "#fac61b",
+  "Oceania" = "#442288"
+)
+
+p3 <- gapminder |>
+  mutate(color = continent_colors[as.character(continent)]) |>
+  group_by(year) |>
+  e_charts(gdpPercap, timeline = TRUE) |>
+  e_scatter(
+    lifeExp,
+    pop,
+    symbol_size = 5,
+    bind = country,
+    legend = FALSE,
+    emphasis = list(focus = 'self')
+  ) |>
+  e_x_axis(
+    name = 'GDP per capita',
+    nameLocation = 'center',
+    type = "log",
+    min = 100,
+    max = 2e5,
+  ) |>
+  e_y_axis(
+    name = "Life Expectancy",
+    max = 100
+  ) |>
+  e_add_nested("itemStyle", color) |>
+  e_legend(show = TRUE)
+p3
+
+# check object$x$opts$options$0$series$0$data$0
+jsonedit(p3)
+```
+
+As we can see from above graphic, we have defined color for each continent. However, there is one problem which is the legend represents the series of the scatter plot which is shown as `lifeExp`. To add a legend for color mapping, we need to use `e_visual_map`.
+
+As far as I know, `e_visual_map` use dimension that the value inside the series i.e. using `jsonedit` and dig into `object$x$opts$0$series$0$data$0$value` as seen in below figure. Now, we have 4 values per each country per year including `gdpPercap`, `lifeExp`, `pop` and `size`. We need to add `continent` as the fifth value. Then we can use `e_visual_map`
+
+Now, let's try by add color column in value via `e_add_nested("value", color)`
+```{r}
+p4 <- gapminder |>
+  mutate(color = continent_colors[as.character(continent)]) |>
+  group_by(year) |>
+  e_charts(gdpPercap, timeline = TRUE) |>
+  e_scatter(
+    lifeExp,
+    pop,
+    symbol_size = 5,
+    bind = country,
+    legend = FALSE,
+    emphasis = list(focus = 'self')
+  ) |>
+  e_x_axis(
+    name = 'GDP per capita',
+    nameLocation = 'center',
+    type = "log",
+    min = 100,
+    max = 2e5,
+  ) |>
+  e_y_axis(
+    name = "Life Expectancy",
+    max = 100
+  ) |>
+  e_add_nested("value", color) # add color to series value
+p4
+
+# check object$x$opts$options$0$series$0$data$0
+jsonedit(p4)
+```
+The result is that `e_add_nested` replace the original value with color. You could try `e_add_nested("value", gdpPercap, lifeExp, pop, color)` but it would not render due to its value become named vector.
+
+
+## `e_add_value`
+Therefore, my solution is to have another function that can keep series' value and add value from specific column(s).
+
+```{r}
+e_add_value <- function(e, ...) {
+
+  for (i in seq_along(e$x$data)) {
+    # extract data to be added
+    data <- e$x$data[[i]] |>
+      dplyr::select(...) |>
+      apply(1, as.list)
+
+    for (j in seq_along(data)) {
+      data_append <- data[[j]] |> unname()
+      if (!e$x$tl) { # if timeline is not used
+        # get data from current echart object
+        data_origin <- e$x$opts$series[[i]]$data[[j]][["value"]]
+        # append data from selection
+        data_new <- list(data_origin, data_append) |> flatten() |> list()
+        # assign to echart object
+        e$x$opts$series[[i]]$data[[j]]["value"] <- data_new
+      } else { # if timeline is used
+        # get data from current echart object
+        data_origin <- e$x$opts$options[[i]]$series[[1]]$data[[j]][["value"]]
+        # append data from selection
+        data_new <- list(data_origin, data_append) |> flatten() |> list()
+        # assign to echart object
+        e$x$opts$options[[i]]$series[[1]]$data[[j]]["value"] <- data_new   
+      }
+    }
+  }
+  e
+}
+```
+
+:::{.callout-note}
+- `json` data structure are different when timeline is used or not.
+- When timeline is not used.
+    - `i` is one.
+    - `j` is the number of rows.
+- When timeline is used
+    - `i` is the number of grouped dataframe.
+    - `j` is the number of rows of each group.
+- It could be better alternative solutions, but this one works for me.
+:::
+
+## continents to colors
+Now, let's see the result.
+```{r}
+p <- p |>
+  e_add_value(continent) |>
+  e_visual_map(
+    type = "piecewise", # discrete/categorial variable
+    dimension = 4, # in java first element start with 0
+    categories = names(continent_colors), # label
+    inRange = list(color = unname(continent_colors)), # hex color
+    orient = "horizontal", # apperance
+    top = "9%", # apperance
+    left = "center" # apperance
+  )
+p
+
+# check object$x$opts$baseOption$visualMap for legend
+jsonedit(p)
+```
+:::{.callout-note}
+When we hover over a continent on the legend, all data from selected continent are highlighted.
+:::
+
+# Step 5: Customize time slider and animation
+We can customize behavior and apperance of time slider using `e_timeline_opts` function. See the [official document](https://echarts.apache.org/en/option.html#timeline) for all arguments.
+
+In addition, we can adjust animation effect using `e_animation` function. My personal preference is to set duration time of animation effect (`duration.update`) slightly less than duration time of time slider (`playInterval`) because it allows users to have extra time with the actual data. Using the same duration between `duration.update` and `playInterval` is also great option. Another useful argument is `easing.update`, see [here](https://echarts.apache.org/examples/en/editor.html?c=line-easing). I use `quadraticInOut` while `linear` is also great choice.
+
+```{r}
+p <- p |>
+  e_timeline_opts(
+    axisType = "category",
+    autoPlay = FALSE,
+    orient = "horizontal",
+    playInterval = 1200,
+    left = "center",
+    width = "75%"
+  ) |>
+  e_animation(
+    duration.update = 1000,
+    easing.update = "quadraticInOut"
+  )
+p
+
+# check object$x$opts$baseOption for animation
+# check object$x$opts$baseOption$timeline for timeline slider
+jsonedit(p)
+```
+
+# Step 6: Add tooltip
+As you notice, there is no information popup when we hover on a bubble. We can add tooltip information using `e_tooltip` together with `JS` function from `htmlwidgets` package.
+
+```{r}
+p <- p |>
+  e_tooltip(
+    trigger = "item",
+    formatter = htmlwidgets::JS("
+      function(params){
+        return(
+          '<strong>' + params.name + '</strong><br />' +
+          'Continent: ' + params.value[4] + '<br />' +
+          'Life Expectancy: ' + params.value[1].toLocaleString(
+            'en-US', {maximumFractionDigits: 0}) + ' year' + '<br />' +
+          'GDP per capita: ' + params.value[0].toLocaleString(
+            'en-US', {maximumFractionDigits: 0}) + ' $' +'<br />' +
+          'Population: ' + params.value[2].toLocaleString('en-US')
+        ) 
+      }
+    ")
+  )
+p
+
+# check object$x$opts$baseOption$tooltip
+jsonedit(p)
+```
+
+:::{.callout-note}
+Note: We can obtain values using `params` where its values via `params.value` and its name via `params.name`.
+:::
+
+
+# Step 7: Polish the chart
+There are a couple things to improve the chart.
+
+- We will add a chart title.
+- We will annotate each frame with information about year of the data.
+- We add toolbox using `e_toolbox_feature`.
+
+We can add chart's title using `e_title` and `e_timeline_serie` for annotating timeframe. Although, `e_title` supports multiple titles, it does not support dynamic titles. Whereas `e_timeline_serie` can used to change title by timeframe, but it can do only one title per timeframe. So I make another function called `e_title_timeline` where the arguement has to be a list of title per each timeline. Note that there might be other ways to do achieve the same result using pre-defined function from `echarts4r`, one is to use `e_text_g` with some customization.
+
+## title in echarts timeframe
+Define a helper function to append a title to echarts. I modify `e_title` as follows. 
+```{r}
+e_title_timeline <- function (e, title) {
+  # loop over group_by data
+  for (i in 1:length(e$x$opts$options)) {
+    # append original title with new title
+    e$x$opts$options[[i]][["title"]] <- append(
+      e$x$opts$options[[i]][["title"]], title[i]
+    )
+  }
+  e
+}
+```
+
+Create two lists: one for main title and one for annotating year.
+```{r}
+# main title
+title_main <- map(
+  as.character(gapminder$year) |> unique(),
+  function(x) {
+    list(
+      text = paste0("GDP per Capita and Life Expectancy in ", x),
+      left = "0%",
+      top = "0%",
+      textStyle = list(fontSize = 18)
+    )
+  }
+)
+
+# time title for annotation
+title_year <- map(
+  as.character(gapminder$year) |> unique(),
+  function(x) {
+    list(
+      text = x,
+      right = "15%", 
+      bottom = "15%",
+      textStyle = list(fontSize = 60)
+    )
+  }
+)
+```
+
+## Add titles and toolbox
+```{r}
+p <- p |>
+  e_title_timeline(title = title_main) |>
+  e_title_timeline(title = title_year) |>
+  e_toolbox_feature(feature = c("saveAsImage", "dataZoom", "restore"))
+p
+
+# check object$x$opts$baseOption$toolbox for toolbox
+# check object$x$opts$options$0$title for title
+jsonedit(p)
+```
+
+
+# Put it all together
+
+```{r}
+# load libraries
+library(gapminder)
+library(echarts4r)
+library(dplyr, warn.conflicts = FALSE)
+library(purrr, warn.conflicts = FALSE)
+library(listviewer)
+
+# define colors
+continent_colors <- c(
+  "Asia" = "#ff5872",
+  "Europe" = "#00d5e9",
+  "Africa" = "#009f3d",
+  "Americas" = "#fac61b",
+  "Oceania" = "#442288"
+)
+
+# make titles
+title_main <- map(
+  as.character(gapminder$year) |> unique(),
+  function(x) {
+    list(
+      text = paste0("GDP per Capita and Life Expectancy in ", x),
+      left = "0%",
+      top = "0%",
+      textStyle = list(fontSize = 18)
+    )
+  }
+)
+title_year <- map(
+  as.character(gapminder$year) |> unique(),
+  function(x) {
+    list(
+      text = x,
+      right = "15%", 
+      bottom = "15%",
+      textStyle = list(fontSize = 60)
+    )
+  }
+)
+
+# define helper functions
+e_add_value <- function(e, ...) {
+
+  for (i in seq_along(e$x$data)) {
+    # extract data to be added
+    data <- e$x$data[[i]] |>
+      dplyr::select(...) |>
+      apply(1, as.list)
+
+    for (j in seq_along(data)) {
+      data_append <- data[[j]] |> unname()
+      if (!e$x$tl) { # if timeline is not used
+        # get data from current echart object
+        data_origin <- e$x$opts$series[[i]]$data[[j]][["value"]]
+        # append data from selection
+        data_new <- list(data_origin, data_append) |> flatten() |> list()
+        # assign to echart object
+        e$x$opts$series[[i]]$data[[j]]["value"] <- data_new
+      } else { # if timeline is used
+        # get data from current echart object
+        data_origin <- e$x$opts$options[[i]]$series[[1]]$data[[j]][["value"]]
+        # append data from selection
+        data_new <- list(data_origin, data_append) |> flatten() |> list()
+        # assign to echart object
+        e$x$opts$options[[i]]$series[[1]]$data[[j]]["value"] <- data_new   
+      }
+    }
+  }
+  e
+}
+
+e_title_timeline <- function (e, title) {
+  # loop over group_by data
+  for (i in 1:length(e$x$opts$options)) {
+    # append original title with new title
+    e$x$opts$options[[i]][["title"]] <- append(
+      e$x$opts$options[[i]][["title"]], title[i]
+    )
+  }
+  e
+}
+
+# make the chart
+p <- gapminder |>
+  group_by(year) |>
+  e_charts(gdpPercap, timeline = TRUE) |>
+  e_scatter(
+    serie = lifeExp,
+    size = pop,
+    symbol_size = 5,
+    bind = country,
+    legend = FALSE,
+    emphasis = list(focus = 'self')
+  ) |>
+  e_x_axis(
+    name = 'GDP per capita',
+    nameLocation = 'center',
+    type = "log",
+    min = 100,
+    max = 2e5,
+  ) |>
+  e_y_axis(
+    name = "Life Expectancy",
+    max = 100
+  ) |>
+  e_add_value(continent) |>
+  e_visual_map(
+    type = "piecewise", # discrete/categorial variable
+    dimension = 4, # in java first element start with 0
+    categories = names(continent_colors), # label
+    inRange = list(color = unname(continent_colors)), # hex color
+    orient = "horizontal", # apperance
+    top = "10%", # apperance
+    left = "center" # apperance
+  ) |>
+  e_timeline_opts(
+    axisType = "category",
+    autoPlay = FALSE,
+    orient = "horizontal",
+    playInterval = 1200,
+    left = "center",
+    width = "75%"
+  ) |>
+  e_animation(
+    duration.update = 1000,
+    easing.update = "quadraticInOut"
+  ) |>
+  e_tooltip(
+    trigger = "item",
+    formatter = htmlwidgets::JS("
+      function(params){
+        return(
+          '<strong>' + params.name + '</strong><br />' +
+          'Continent: ' + params.value[4] + '<br />' +
+          'Life Expectancy: ' + params.value[1].toLocaleString(
+            'en-US', {maximumFractionDigits: 0}) + ' year' + '<br />' +
+          'GDP per capita: ' + params.value[0].toLocaleString(
+            'en-US', {maximumFractionDigits: 0}) + ' $' +'<br />' +
+          'Population: ' + params.value[2].toLocaleString('en-US')
+        ) 
+      }
+    ")
+  ) |>
+  e_title_timeline(title = title_main) |>
+  e_title_timeline(title = title_year) |>
+  e_toolbox_feature(feature = c("saveAsImage", "dataZoom", "restore"))
+
+p
+```
+
+# Conclusion remark
+`echarts` is very powerfull visualization tool. `echarts4r` is a great package to turn you `R` code into `echarts` visualization. It is easy to get start, but to make a professional look visualization would take some efforts and knownledge about `R`, `html` and `JavaScript`. To learn more, I strongly recommend  [JavaScript for R](https://book.javascript-for-r.com/) the book by John Coene, the author of `echarts4r`. I would have other examples using `echarts4r`, so stay tuned.
+
+Lastly, I would like to thanks John Coene for `echarts4r` and his contributions to R communities. Please see his [github repo](https://github.com/JohnCoene) for his great works.

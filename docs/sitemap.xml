@@ -2,26 +2,30 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://piyayut-ch.github.io/piyayut/about.html</loc>
-    <lastmod>2022-07-27T22:41:23.505Z</lastmod>
+    <lastmod>2022-07-30T16:03:17.761Z</lastmod>
   </url>
   <url>
     <loc>https://piyayut-ch.github.io/piyayut/index.html</loc>
-    <lastmod>2022-07-27T22:47:53.775Z</lastmod>
+    <lastmod>2022-07-30T16:03:18.367Z</lastmod>
   </url>
   <url>
     <loc>https://piyayut-ch.github.io/piyayut/posts/2022-07-09_quarto-blog/index.html</loc>
-    <lastmod>2022-07-27T22:41:25.084Z</lastmod>
+    <lastmod>2022-07-30T16:03:19.189Z</lastmod>
   </url>
   <url>
     <loc>https://piyayut-ch.github.io/piyayut/posts/2022-07-28_data_manipulation_basic/index.html</loc>
-    <lastmod>2022-07-27T22:47:56.967Z</lastmod>
+    <lastmod>2022-07-30T16:03:20.780Z</lastmod>
+  </url>
+  <url>
+    <loc>https://piyayut-ch.github.io/piyayut/posts/2022-07-30_echarts_gapminder/index.html</loc>
+    <lastmod>2022-07-30T16:03:22.262Z</lastmod>
   </url>
   <url>
     <loc>https://piyayut-ch.github.io/piyayut/projects/mapthai/index.html</loc>
-    <lastmod>2022-07-27T22:41:28.903Z</lastmod>
+    <lastmod>2022-07-30T16:03:24.705Z</lastmod>
   </url>
   <url>
     <loc>https://piyayut-ch.github.io/piyayut/projects.html</loc>
-    <lastmod>2022-07-27T22:41:29.279Z</lastmod>
+    <lastmod>2022-07-30T16:03:25.045Z</lastmod>
   </url>
 </urlset>

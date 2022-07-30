@@ -32,7 +32,7 @@
     "href": "index.html",
     "title": "Piyayut’s Blog",
     "section": "",
-    "text": "tutorial\n\n\nR\n\n\npython\n\n\ndata-manipulation\n\n\ndata-wraning\n\n\ndata-transformation\n\n\n\n\nA code snippet to how to implement basic data manipulation using R and python.\n\n\n\n\n\n\nJul 28, 2022\n\n\nPiyayut Chitchumnong\n\n\n\n\n\n\n  \n\n\n\n\n\n\n\n\n\n\nquarto\n\n\ntutorial\n\n\n\n\nA quick tutorial on how to create a personal blog using quarto.\n\n\n\n\n\n\nJul 9, 2022\n\n\nPiyayut Chitchumnong\n\n\n\n\n\n\nNo matching items"
+    "text": "tutorial\n\n\nR\n\n\necharts\n\n\ndata-visualization\n\n\nanimation\n\n\n\n\nA walkthrough of how to make the animated gapminder chart using R and echarts.\n\n\n\n\n\n\nJul 30, 2022\n\n\nPiyayut Chitchumnong\n\n\n\n\n\n\n  \n\n\n\n\n\n\n\n\n\n\ntutorial\n\n\nR\n\n\npython\n\n\ndata-manipulation\n\n\ndata-wraning\n\n\ndata-transformation\n\n\n\n\nA code snippet to how to implement basic data manipulation using R and python.\n\n\n\n\n\n\nJul 28, 2022\n\n\nPiyayut Chitchumnong\n\n\n\n\n\n\n  \n\n\n\n\n\n\n\n\n\n\nquarto\n\n\ntutorial\n\n\n\n\nA quick tutorial on how to create a personal blog using quarto.\n\n\n\n\n\n\nJul 9, 2022\n\n\nPiyayut Chitchumnong\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "posts/2022-07-09_quarto-blog/index.html#install-quarto",
@@ -173,6 +173,69 @@
     "title": "Grammar of Data Manipulation in R and python",
     "section": "12.1 Useful resource:",
     "text": "12.1 Useful resource:\n\nhttps://homepage.divms.uiowa.edu/~luke/classes/STAT4580/dplyr.html#grouped-mutate-and-filter\nhttps://dplyr.tidyverse.org\nhttps://tidyr.tidyverse.org/\nhttps://r4ds.had.co.nz/\nhttps://wesmckinney.com/book/\nhttps://www.rstudio.com/resources/cheatsheets/\nhttps://pandas.pydata.org/Pandas_Cheat_Sheet.pdf"
+  },
+  {
+    "objectID": "posts/2022-07-30_echarts_gapminder/index.html#what-is-echarts",
+    "href": "posts/2022-07-30_echarts_gapminder/index.html#what-is-echarts",
+    "title": "How to make the animated gapminder chart using R and echarts",
+    "section": "What is echarts ?",
+    "text": "What is echarts ?\necharts is an open-source javascript for interactive visualization project. Like others javascript visualization libraries, it requies json data and render into interactive visualization object."
+  },
+  {
+    "objectID": "posts/2022-07-30_echarts_gapminder/index.html#what-is-echarts4r",
+    "href": "posts/2022-07-30_echarts_gapminder/index.html#what-is-echarts4r",
+    "title": "How to make the animated gapminder chart using R and echarts",
+    "section": "What is echarts4r?",
+    "text": "What is echarts4r?\necharts4r is R package developed by John Coene. echarts4r allow R users to generate echarts visualization by simply writing a R code. As John mentioned, json data is pretty much a list in R language. So the goal is to make a nested list that echarts required. echarts4r provide helper functions to create echart graphic. However, we can make our own R functions or arguements for full customization. See echarts document.\nIf you are new to echarts4r, please see package document."
+  },
+  {
+    "objectID": "posts/2022-07-30_echarts_gapminder/index.html#data",
+    "href": "posts/2022-07-30_echarts_gapminder/index.html#data",
+    "title": "How to make the animated gapminder chart using R and echarts",
+    "section": "Data",
+    "text": "Data\nFirst, let preview our data gapminder. There are 6 variables: country, continent, year, LifeExp, pop, and gdpPercap. It contains data from 142 countries ranging from 1952-2007.\n\ngapminder\n\n#> # A tibble: 1,704 × 6\n#>    country     continent  year lifeExp      pop gdpPercap\n#>    <fct>       <fct>     <int>   <dbl>    <int>     <dbl>\n#>  1 Afghanistan Asia       1952    28.8  8425333      779.\n#>  2 Afghanistan Asia       1957    30.3  9240934      821.\n#>  3 Afghanistan Asia       1962    32.0 10267083      853.\n#>  4 Afghanistan Asia       1967    34.0 11537966      836.\n#>  5 Afghanistan Asia       1972    36.1 13079460      740.\n#>  6 Afghanistan Asia       1977    38.4 14880372      786.\n#>  7 Afghanistan Asia       1982    39.9 12881816      978.\n#>  8 Afghanistan Asia       1987    40.8 13867957      852.\n#>  9 Afghanistan Asia       1992    41.7 16317921      649.\n#> 10 Afghanistan Asia       1997    41.8 22227415      635.\n#> # … with 1,694 more rows\n\ngapminder |> count(country)\n\n#> # A tibble: 142 × 2\n#>    country         n\n#>    <fct>       <int>\n#>  1 Afghanistan    12\n#>  2 Albania        12\n#>  3 Algeria        12\n#>  4 Angola         12\n#>  5 Argentina      12\n#>  6 Australia      12\n#>  7 Austria        12\n#>  8 Bahrain        12\n#>  9 Bangladesh     12\n#> 10 Belgium        12\n#> # … with 132 more rows\n\ngapminder |> count(year)\n\n#> # A tibble: 12 × 2\n#>     year     n\n#>    <int> <int>\n#>  1  1952   142\n#>  2  1957   142\n#>  3  1962   142\n#>  4  1967   142\n#>  5  1972   142\n#>  6  1977   142\n#>  7  1982   142\n#>  8  1987   142\n#>  9  1992   142\n#> 10  1997   142\n#> 11  2002   142\n#> 12  2007   142"
+  },
+  {
+    "objectID": "posts/2022-07-30_echarts_gapminder/index.html#echarts-and-timeline",
+    "href": "posts/2022-07-30_echarts_gapminder/index.html#echarts-and-timeline",
+    "title": "How to make the animated gapminder chart using R and echarts",
+    "section": "echarts and timeline",
+    "text": "echarts and timeline\nNow, create an echarts object and assign to p variable. This will create an empty canvas with time slider. We also use jsonedit function from listviewer to see the nested list used by echarts. Note that we map gdpPercap to x axis.\n\np <- gapminder |>\n  group_by(year) |>\n  e_charts(gdpPercap, timeline = TRUE)\np\n\n\n\n\n# check object$x$data for data stored in echarts object\n# check object$x$opts$options for data used for visualization\njsonedit(p)\n\n\n\n\n\nAs we can see, that group_by function divide gapminder dataframe by year, so there are 12 dataframes corresponding to a particular year. Explore the list via the result from jsonedit, check object$x$data and object$x$opts$options. We couls see that both have 12 elements. You can check the differences when we do not use group_by.\n\np2 <- gapminder |>\n  e_charts(gdpPercap)\np2\n\n\n\n\n# check object$x$data and object$x$opts$options\njsonedit(p2)"
+  },
+  {
+    "objectID": "posts/2022-07-30_echarts_gapminder/index.html#e_add",
+    "href": "posts/2022-07-30_echarts_gapminder/index.html#e_add",
+    "title": "How to make the animated gapminder chart using R and echarts",
+    "section": "e_add",
+    "text": "e_add\nFirst, we use create a new column called color which has associated hex color for each continent. Then, we use e_add_nested by assigning color column to itemStyle keyword. Lastly, we turn on the legend using e_legend(show = TRUE).\n\n# create a named vector for mapping continents to colors\ncontinent_colors <- c(\n  \"Asia\" = \"#ff5872\",\n  \"Europe\" = \"#00d5e9\",\n  \"Africa\" = \"#009f3d\",\n  \"Americas\" = \"#fac61b\",\n  \"Oceania\" = \"#442288\"\n)\n\np3 <- gapminder |>\n  mutate(color = continent_colors[as.character(continent)]) |>\n  group_by(year) |>\n  e_charts(gdpPercap, timeline = TRUE) |>\n  e_scatter(\n    lifeExp,\n    pop,\n    symbol_size = 5,\n    bind = country,\n    legend = FALSE,\n    emphasis = list(focus = 'self')\n  ) |>\n  e_x_axis(\n    name = 'GDP per capita',\n    nameLocation = 'center',\n    type = \"log\",\n    min = 100,\n    max = 2e5,\n  ) |>\n  e_y_axis(\n    name = \"Life Expectancy\",\n    max = 100\n  ) |>\n  e_add_nested(\"itemStyle\", color) |>\n  e_legend(show = TRUE)\np3\n\n\n\n\n# check object$x$opts$options$0$series$0$data$0\njsonedit(p3)\n\n\n\n\n\nAs we can see from above graphic, we have defined color for each continent. However, there is one problem which is the legend represents the series of the scatter plot which is shown as lifeExp. To add a legend for color mapping, we need to use e_visual_map.\nAs far as I know, e_visual_map use dimension that the value inside the series i.e. using jsonedit and dig into object$x$opts$0$series$0$data$0$value as seen in below figure. Now, we have 4 values per each country per year including gdpPercap, lifeExp, pop and size. We need to add continent as the fifth value. Then we can use e_visual_map\nNow, let’s try by add color column in value via e_add_nested(\"value\", color)\n\np4 <- gapminder |>\n  mutate(color = continent_colors[as.character(continent)]) |>\n  group_by(year) |>\n  e_charts(gdpPercap, timeline = TRUE) |>\n  e_scatter(\n    lifeExp,\n    pop,\n    symbol_size = 5,\n    bind = country,\n    legend = FALSE,\n    emphasis = list(focus = 'self')\n  ) |>\n  e_x_axis(\n    name = 'GDP per capita',\n    nameLocation = 'center',\n    type = \"log\",\n    min = 100,\n    max = 2e5,\n  ) |>\n  e_y_axis(\n    name = \"Life Expectancy\",\n    max = 100\n  ) |>\n  e_add_nested(\"value\", color) # add color to series value\np4\n\n\n\n\n# check object$x$opts$options$0$series$0$data$0\njsonedit(p4)\n\n\n\n\n\nThe result is that e_add_nested replace the original value with color. You could try e_add_nested(\"value\", gdpPercap, lifeExp, pop, color) but it would not render due to its value become named vector."
+  },
+  {
+    "objectID": "posts/2022-07-30_echarts_gapminder/index.html#e_add_value",
+    "href": "posts/2022-07-30_echarts_gapminder/index.html#e_add_value",
+    "title": "How to make the animated gapminder chart using R and echarts",
+    "section": "e_add_value",
+    "text": "e_add_value\nTherefore, my solution is to have another function that can keep series’ value and add value from specific column(s).\n\ne_add_value <- function(e, ...) {\n\n  for (i in seq_along(e$x$data)) {\n    # extract data to be added\n    data <- e$x$data[[i]] |>\n      dplyr::select(...) |>\n      apply(1, as.list)\n\n    for (j in seq_along(data)) {\n      data_append <- data[[j]] |> unname()\n      if (!e$x$tl) { # if timeline is not used\n        # get data from current echart object\n        data_origin <- e$x$opts$series[[i]]$data[[j]][[\"value\"]]\n        # append data from selection\n        data_new <- list(data_origin, data_append) |> flatten() |> list()\n        # assign to echart object\n        e$x$opts$series[[i]]$data[[j]][\"value\"] <- data_new\n      } else { # if timeline is used\n        # get data from current echart object\n        data_origin <- e$x$opts$options[[i]]$series[[1]]$data[[j]][[\"value\"]]\n        # append data from selection\n        data_new <- list(data_origin, data_append) |> flatten() |> list()\n        # assign to echart object\n        e$x$opts$options[[i]]$series[[1]]$data[[j]][\"value\"] <- data_new   \n      }\n    }\n  }\n  e\n}\n\n\n\n\n\n\n\nNote\n\n\n\n\njson data structure are different when timeline is used or not.\nWhen timeline is not used.\n\ni is one.\nj is the number of rows.\n\nWhen timeline is used\n\ni is the number of grouped dataframe.\nj is the number of rows of each group.\n\nIt could be better alternative solutions, but this one works for me."
+  },
+  {
+    "objectID": "posts/2022-07-30_echarts_gapminder/index.html#continents-to-colors",
+    "href": "posts/2022-07-30_echarts_gapminder/index.html#continents-to-colors",
+    "title": "How to make the animated gapminder chart using R and echarts",
+    "section": "continents to colors",
+    "text": "continents to colors\nNow, let’s see the result.\n\np <- p |>\n  e_add_value(continent) |>\n  e_visual_map(\n    type = \"piecewise\", # discrete/categorial variable\n    dimension = 4, # in java first element start with 0\n    categories = names(continent_colors), # label\n    inRange = list(color = unname(continent_colors)), # hex color\n    orient = \"horizontal\", # apperance\n    top = \"9%\", # apperance\n    left = \"center\" # apperance\n  )\np\n\n\n\n\n# check object$x$opts$baseOption$visualMap for legend\njsonedit(p)\n\n\n\n\n\n\n\n\n\n\n\nNote\n\n\n\nWhen we hover over a continent on the legend, all data from selected continent are highlighted."
+  },
+  {
+    "objectID": "posts/2022-07-30_echarts_gapminder/index.html#title-in-echarts-timeframe",
+    "href": "posts/2022-07-30_echarts_gapminder/index.html#title-in-echarts-timeframe",
+    "title": "How to make the animated gapminder chart using R and echarts",
+    "section": "title in echarts timeframe",
+    "text": "title in echarts timeframe\nDefine a helper function to append a title to echarts. I modify e_title as follows.\n\ne_title_timeline <- function (e, title) {\n  # loop over group_by data\n  for (i in 1:length(e$x$opts$options)) {\n    # append original title with new title\n    e$x$opts$options[[i]][[\"title\"]] <- append(\n      e$x$opts$options[[i]][[\"title\"]], title[i]\n    )\n  }\n  e\n}\n\nCreate two lists: one for main title and one for annotating year.\n\n# main title\ntitle_main <- map(\n  as.character(gapminder$year) |> unique(),\n  function(x) {\n    list(\n      text = paste0(\"GDP per Capita and Life Expectancy in \", x),\n      left = \"0%\",\n      top = \"0%\",\n      textStyle = list(fontSize = 18)\n    )\n  }\n)\n\n# time title for annotation\ntitle_year <- map(\n  as.character(gapminder$year) |> unique(),\n  function(x) {\n    list(\n      text = x,\n      right = \"15%\", \n      bottom = \"15%\",\n      textStyle = list(fontSize = 60)\n    )\n  }\n)"
+  },
+  {
+    "objectID": "posts/2022-07-30_echarts_gapminder/index.html#add-titles-and-toolbox",
+    "href": "posts/2022-07-30_echarts_gapminder/index.html#add-titles-and-toolbox",
+    "title": "How to make the animated gapminder chart using R and echarts",
+    "section": "Add titles and toolbox",
+    "text": "Add titles and toolbox\n\np <- p |>\n  e_title_timeline(title = title_main) |>\n  e_title_timeline(title = title_year) |>\n  e_toolbox_feature(feature = c(\"saveAsImage\", \"dataZoom\", \"restore\"))\np\n\n\n\n\n# check object$x$opts$baseOption$toolbox for toolbox\n# check object$x$opts$options$0$title for title\njsonedit(p)"
   },
   {
     "objectID": "projects/mapthai/index.html",
