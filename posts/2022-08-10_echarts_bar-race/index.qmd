@@ -1,0 +1,527 @@
+---
+title: "How to make a bar race using R and echarts"
+author: "Piyayut Chitchumnong"
+description: | 
+  A walkthrough of how to make a bar race chart using R and echarts.
+date: "2022-08-10"
+categories: [tutorial, R, echarts, data-visualization, animation, bar-race]
+format:
+  html:
+    df-print: tibble
+knitr:
+  opts_chunk:
+    comment: "#>"
+---
+
+![](feature.webp)
+
+# Introduction
+In the [previous post](https://piyayut-ch.github.io/piyayut/posts/2022-07-30_echarts_gapminder/), I show how to make an animated gapminder chart `R`, [`echarts`](https://echarts.apache.org/en/index.html) and [`echarts4r`](https://echarts4r.john-coene.com/index.html) package. In this post, I will show how to make another animated chart called a **bar race** like [this one](https://app.flourish.studio/@flourish/bar-chart-race) where we want to show how population of individual countries have changed overtime. Let's get start.
+
+
+# Step 0: Load packages
+First, we load required R packages as follows 
+```{r}
+# install package if you do not have them install.package
+library(WDI) # gapminder data
+library(countrycode) # for mapping continent
+library(echarts4r) # make echarts using R
+library(dplyr, warn.conflicts = FALSE) # data manipulation
+library(tidyr, warn.conflicts = FALSE) # handling na
+library(purrr, warn.conflicts = FALSE) # functional programming
+library(listviewer) # view nested list
+```
+
+
+# Step 1: Data Preparation
+Next step is to load data and transform data for data visualization. We use [`WDI`](https://github.com/vincentarelbundock/WDI) package by [Vincent Arel-Bundock](https://arelbundock.com/) that can download Worldbank data using `R` function call. We also use [`countrycode`](https://github.com/vincentarelbundock/countrycode) by the same author for mapping continent information of each country.
+```{r}
+#| include: false
+
+df <- readRDS("wdi_population.rds")
+```
+
+We can download data from using `WDI` function by giving an indicator for total population is `SP.POP.TOTL`.
+```{r}
+#| eval: false
+
+df <- WDI(indicator = "SP.POP.TOTL", extra = TRUE) |> # get data
+  rename(pop = SP.POP.TOTL) |> # simplify name
+  as_tibble() |> # convert to tibble
+  mutate(pop = round(pop/1e6, 0)) |> # change unit to millions
+  arrange(year, -pop) # reorder by year
+```
+
+Let's explor our data.
+```{r}
+df
+```
+
+Note that `WDI` retrieve aggregates data where the world is indicated by `iso2c` equals `1W`.
+```{r}
+df |> distinct(region)
+
+df |> filter(region == "Aggregates") |> distinct(iso2c, country, region)
+```
+
+We will create two data frame for futher uses where one is for total population called `df_world` and the other one is for indivudal country called `df_country`. We also want to know the continent of country instead of region so we join continent information using `codelist` from `countrycodes` package.
+```{r}
+df_world <- df |> filter(iso2c == "1W")
+
+df_country <- df |>
+  filter(region != "Aggregates") |>
+  drop_na(pop) |>
+  left_join(codelist[, c("iso2c", "continent")], by = "iso2c")
+```
+
+As we join data, we should check whether there is missmatch. We found that there are two countries that do not have continent which are Channel Islands and Kosovo. Since they are in Europe, we correct it and save it to `df_country`.
+```{r}
+df_country |> filter(is.na(continent)) |> count(iso2c, country)
+
+df_country <- df_country |>
+  mutate(continent = if_else(is.na(continent), "Europe", continent))
+```
+
+As a final data, we will visualize total population of 216 countries from 1960 - 2021.
+```{r}
+df_country |> count(country)
+df_country |> count(year)
+```
+
+# Step 2: Initialize an echart with timeline
+We initialize an `echart` with timeline using `echarts4r` and `group_by` and assign to `p` variable. This will create an empty canvas with time slider. We also use `jsonedit` function from `listviewer` to see the nested list used by `echarts`. Note that we map `country` to x axis (where we will flip to y axis later).
+```{r}
+p <- df_country |>
+  group_by(year) |>
+  e_charts(country, timeline = TRUE)
+
+p
+```
+
+
+# Step 3: Make a bar chart
+Now, we make a bar plot using `e_bar` where we map `pop` to y-axis and then flip to x-axis using `e_flip_coords` for better visual. Note that `realtimeSort` uses for sorting as time change. `label` is for label the value at the right of each bar. We turn off `legend` because later we want to add color to represent `continent`.
+```{r}
+p <- p |>
+  e_bar(
+    pop,
+    realtimeSort = TRUE,
+    legend = FALSE,
+    label = list(
+      show = TRUE,
+      precision = 1,
+      position = 'right'
+    )
+  ) |>
+  e_flip_coords()
+
+p
+```
+
+
+# Step 4: Adjust x and y axis
+
+- We add x-axis labels via `e_x_axis`.
+- We want to reorder by putting most population at the top of the chart by setting `inverse = TRUE` in `e_y_axis`. 
+- The chart has too many countries, we will show only top 20 using `max = 20` in `e_y_axis`.
+- Moreover, we can modify animation effect with `animationDuration` and `animationDurationUpdate` arguement in `e_y_axis`.
+- Last, we modify the margin of y-axis as country name is long using `e_grid`.
+
+```{r}
+p <- p |>
+  e_x_axis(
+    name = 'Population (mil.)',
+    nameLocation = "end",
+    nameGap = 20,
+    nameTextStyle = list(align = "right")
+  ) |>
+  e_y_axis(
+    inverse = TRUE,
+    max = 20,
+    animationDuration = 150,
+    animationDurationUpdate = 150,
+  ) |>
+  e_grid(left = 120, bottom = 80)
+p
+```
+
+# Step 5: Assign color to continent and create a legend
+We follow the approach from [my previous post](https://piyayut-ch.github.io/piyayut/posts/2022-07-30_echarts_gapminder/) using custom `e_add_value` function to assign continent to colors.
+
+```{r}
+# define colors
+continent_colors <- c(
+  "Asia" = "#ff5872",
+  "Europe" = "#00d5e9",
+  "Africa" = "#009f3d",
+  "Americas" = "#fac61b",
+  "Oceania" = "#442288"
+)
+
+# define e_add_value
+e_add_value <- function(e, ...) {
+  for (i in seq_along(e$x$data)) {
+    # extract data to be added
+    data <- e$x$data[[i]] |>
+      dplyr::select(...) |>
+      apply(1, as.list)
+
+    for (j in seq_along(data)) {
+      data_append <- data[[j]] |> unname()
+      if (!e$x$tl) { # if timeline is not used
+        # get data from current echart object
+        data_origin <- e$x$opts$series[[i]]$data[[j]][["value"]]
+        # append data from selection
+        data_new <- list(data_origin, data_append) |> flatten() |> list()
+        # assign to echart object
+        e$x$opts$series[[i]]$data[[j]]["value"] <- data_new
+      } else { # if timeline is used
+        # get data from current echart object
+        data_origin <- e$x$opts$options[[i]]$series[[1]]$data[[j]][["value"]]
+        # append data from selection
+        data_new <- list(data_origin, data_append) |> flatten() |> list()
+        # assign to echart object
+        e$x$opts$options[[i]]$series[[1]]$data[[j]]["value"] <- data_new   
+      }
+    }
+  }
+  e
+}
+```
+
+Apply `e_add_value` to change color by continent
+```{r}
+p <- p |>
+  e_add_value(continent) |>
+  e_visual_map(
+    type = "piecewise", # discrete/categorial variable
+    dimension = 2, # in java first element start with 0
+    categories = names(continent_colors), # label
+    inRange = list(color = unname(continent_colors)), # hex color
+    orient = "horizontal", # apperance
+    top = "5%", # apperance
+    left = "center" # apperance
+  )
+p
+```
+:::{.callout-note}
+One limitation of using `visual_map` feature is we could not dynamically filter data because it only disable visual from the chart. It could be a way(s) to dynamically choose continent(s) of interest using `echarts` but I still could not find a way yet. However, one possible solution is to add a html input to filter data before putting it into `echarts`.
+:::
+
+
+# Step 6: Customize time slider and animation
+We can customize behavior and apperance of time slider using `e_timeline_opts` function and we adjust animation effect using `e_animation` function.
+
+```{r}
+p <- p |>
+  e_timeline_opts(
+    axisType = "category",
+    autoPlay = FALSE,
+    orient = "horizontal",
+    playInterval = 300,
+    symbolSize = 8,
+    left = "center",
+    width = "90%",
+    loop = FALSE
+  ) |>
+  e_animation(
+    duration = 300,
+    duration.update = 300,
+    easing = "linear",
+    easing.update = "linear"
+  )
+p
+```
+
+
+# Step 7: Polish the chart
+There are a couple things to improve the chart.
+
+- We will add a chart title.
+- We will annotate each time frame with information about year of the data.
+- We will annotate each time frame with information about total population.
+- We add toolbox for saving image using `e_toolbox_feature`.
+
+Again, We follow the approach from [my previous post](https://piyayut-ch.github.io/piyayut/posts/2022-07-30_echarts_gapminder/) using custom `e_title_timeline` function to assign title for each time frame. We create three lists including
+
+- main title
+- year
+- total population of each year
+
+```{r}
+# define e_title_timeline function
+e_title_timeline <- function (e, title) {
+  # loop over group_by data
+  for (i in 1:length(e$x$opts$options)) {
+    # append original title with new title
+    e$x$opts$options[[i]][["title"]] <- append(
+      e$x$opts$options[[i]][["title"]], title[i]
+    )
+  }
+  e
+}
+
+
+# main title
+title_main <- map(
+  as.character(df_country$year) |> unique(),
+  function(x) {
+    list(
+      text = paste0("Population of top 20 countries in ", x),
+      left = "0%",
+      top = "0%",
+      textStyle = list(fontSize = 18)
+    )
+  }
+)
+
+# time title for annotation
+title_year <- map(
+  as.character(df_country$year) |> unique(),
+  function(x) {
+    list(
+      text = x,
+      right = "15%", 
+      bottom = "25%",
+      textStyle = list(
+        color = "#b5b5b5",
+        fontSize = 60
+      )
+    )
+  }
+)
+
+# time title for total population
+title_popsize <- map(
+  as.character(df_world$year) |> unique(),
+  function(x) {
+    list(
+      text = paste(
+        "Total: ",
+        format(
+          df_world |> filter(year == x) |> pull(pop),
+          nsmall = 0, big.mark = ","
+        ),
+        "millions"
+      ),
+      right = "15%", 
+      bottom = "22%",
+      textStyle = list(
+        color = "#b5b5b5",
+        fontweight = 200,
+        fontSize = 16
+      )
+    )
+  }
+)
+```
+
+Add titles and toolbox to the chart.
+```{r}
+p <- p |>
+  e_title_timeline(title = title_main) |>
+  e_title_timeline(title = title_year) |>
+  e_title_timeline(title = title_popsize) |>
+  e_toolbox_feature(feature = c("saveAsImage"))
+p
+```
+
+
+# Put it all together
+
+```{r}
+#| eval: false
+
+# load libraries 
+library(WDI)
+library(countrycode)
+library(echarts4r)
+library(dplyr, warn.conflicts = FALSE)
+library(tidyr, warn.conflicts = FALSE)
+library(purrr, warn.conflicts = FALSE)
+library(listviewer)
+
+# data preparation
+df <- WDI(indicator = "SP.POP.TOTL", extra = TRUE) |>
+  rename(pop = SP.POP.TOTL) |>
+  as_tibble() |>
+  mutate(pop = round(pop/1e6, 0)) |>
+  arrange(year)
+
+df_world <- df |> filter(iso2c == "1W")
+
+df_country <- df |>
+  filter(region != "Aggregates") |>
+  drop_na(pop) |>
+  left_join(codelist[, c("iso2c", "continent")], by = "iso2c")
+
+df_country <- df_country |>
+  mutate(continent = if_else(is.na(continent), "Europe", continent))
+
+# define colors
+continent_colors <- c(
+  "Asia" = "#ff5872",
+  "Europe" = "#00d5e9",
+  "Africa" = "#009f3d",
+  "Americas" = "#fac61b",
+  "Oceania" = "#442288"
+)
+
+# helper functions
+e_add_value <- function(e, ...) {
+  for (i in seq_along(e$x$data)) {
+    # extract data to be added
+    data <- e$x$data[[i]] |>
+      dplyr::select(...) |>
+      apply(1, as.list)
+
+    for (j in seq_along(data)) {
+      data_append <- data[[j]] |> unname()
+      if (!e$x$tl) { # if timeline is not used
+        # get data from current echart object
+        data_origin <- e$x$opts$series[[i]]$data[[j]][["value"]]
+        # append data from selection
+        data_new <- list(data_origin, data_append) |> flatten() |> list()
+        # assign to echart object
+        e$x$opts$series[[i]]$data[[j]]["value"] <- data_new
+      } else { # if timeline is used
+        # get data from current echart object
+        data_origin <- e$x$opts$options[[i]]$series[[1]]$data[[j]][["value"]]
+        # append data from selection
+        data_new <- list(data_origin, data_append) |> flatten() |> list()
+        # assign to echart object
+        e$x$opts$options[[i]]$series[[1]]$data[[j]]["value"] <- data_new   
+      }
+    }
+  }
+  e
+}
+
+e_title_timeline <- function (e, title) {
+  # loop over group_by data
+  for (i in 1:length(e$x$opts$options)) {
+    # append original title with new title
+    e$x$opts$options[[i]][["title"]] <- append(
+      e$x$opts$options[[i]][["title"]], title[i]
+    )
+  }
+  e
+}
+
+# create main title
+title_main <- map(
+  as.character(df_country$year) |> unique(),
+  function(x) {
+    list(
+      text = paste0("Population of top 20 countries in ", x),
+      left = "0%",
+      top = "0%",
+      textStyle = list(fontSize = 18)
+    )
+  }
+)
+
+# create time title for annotation
+title_year <- map(
+  as.character(df_country$year) |> unique(),
+  function(x) {
+    list(
+      text = x,
+      right = "15%", 
+      bottom = "25%",
+      textStyle = list(
+        color = "#b5b5b5",
+        fontSize = 60
+      )
+    )
+  }
+)
+
+# create time title for total population
+title_popsize <- map(
+  as.character(df_world$year) |> unique(),
+  function(x) {
+    list(
+      text = paste(
+        "Total: ",
+        format(
+          df_world |> filter(year == x) |> pull(pop),
+          nsmall = 0, big.mark = ","
+        ),
+        "millions"
+      ),
+      right = "15%", 
+      bottom = "22%",
+      textStyle = list(
+        color = "#b5b5b5",
+        fontweight = 200,
+        fontSize = 16
+      )
+    )
+  }
+)
+
+# make a chart
+p <- df_country |>
+  group_by(year) |>
+  e_charts(country, timeline = TRUE) |>
+  e_bar(
+    pop,
+    realtimeSort = TRUE,
+    legend = FALSE,
+    label = list(
+      show = TRUE,
+      precision = 1,
+      position = 'right'
+    )
+  ) |>
+  e_flip_coords() |>
+  e_x_axis(
+    name = 'Population (mil.)',
+    nameLocation = "end",
+    nameGap = 20,
+    nameTextStyle = list(align = "right")
+  ) |>
+  e_y_axis(
+    inverse = TRUE,
+    max = 20,
+    animationDuration = 150,
+    animationDurationUpdate = 150,
+  ) |>
+  e_grid(left = 120, bottom = 80) |>
+  e_add_value(continent) |>
+  e_visual_map(
+    type = "piecewise",
+    dimension = 2,
+    categories = names(continent_colors),
+    inRange = list(color = unname(continent_colors)),
+    orient = "horizontal",
+    top = "5%",
+    left = "center"
+  ) |>
+  e_timeline_opts(
+    axisType = "category",
+    autoPlay = FALSE,
+    orient = "horizontal",
+    playInterval = 300,
+    symbolSize = 8,
+    left = "center",
+    width = "90%",
+    loop = FALSE
+  ) |>
+  e_animation(
+    duration = 300,
+    duration.update = 300,
+    easing = "linear",
+    easing.update = "linear"
+  ) |>
+  e_title_timeline(title = title_main) |>
+  e_title_timeline(title = title_year) |>
+  e_title_timeline(title = title_popsize) |>
+  e_toolbox_feature(feature = c("saveAsImage"))
+```
+
+
+```{r}
+p
+```
