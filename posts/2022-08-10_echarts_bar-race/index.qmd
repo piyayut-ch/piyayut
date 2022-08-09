@@ -13,7 +13,7 @@ knitr:
     comment: "#>"
 ---
 
-![](feature.webp)
+![](feature.gif)
 
 # Introduction
 In the [previous post](https://piyayut-ch.github.io/piyayut/posts/2022-07-30_echarts_gapminder/), I show how to make an animated gapminder chart `R`, [`echarts`](https://echarts.apache.org/en/index.html) and [`echarts4r`](https://echarts4r.john-coene.com/index.html) package. In this post, I will show how to make another animated chart called a **bar race** like [this one](https://app.flourish.studio/@flourish/bar-chart-race) where we want to show how population of individual countries have changed overtime. Let's get start.
