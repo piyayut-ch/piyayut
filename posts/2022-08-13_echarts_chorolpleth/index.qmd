@@ -1,0 +1,496 @@
+---
+title: "How to make an animated map using R and echarts"
+author: "Piyayut Chitchumnong"
+description: | 
+  A walkthrough of how to make an animated choropleth map using R and echarts.
+date: "2022-08-13"
+categories: [tutorial, R, echarts, data-visualization, animation, choropleth, map]
+format:
+  html:
+    df-print: tibble
+knitr:
+  opts_chunk:
+    comment: "#>"
+---
+
+![](feature.gif)
+
+# Introduction
+In the previous posts, I show how to make animated charts i.e. [gapminder chart](https://piyayut-ch.github.io/piyayut/posts/2022-07-30_echarts_gapminder/) and [bar-race chart](https://piyayut-ch.github.io/piyayut/posts/2022-08-10_echarts_bar-race/) using `R`, [`echarts`](https://echarts.apache.org/en/index.html) and [`echarts4r`](https://echarts4r.john-coene.com/index.html) package.
+
+In this post, I will show how to make an **animated choropleth map** where we want to show GDP growth (annual %) from 1961-2021. The chart shows major events or crisis i.e. Asian Financial Crisis (1997-1998), Global Financial Crisis (2008-2009) and Covid-19 Crisis (2019-2020), etc.
+
+Let's do it.
+
+# Step 0: Load packages
+First, we load required R packages as follows 
+```{r}
+library(WDI) # gapminder data
+library(countrycode) # for mapping continent
+library(echarts4r) # make echarts using R
+library(dplyr, warn.conflicts = FALSE) # data manipulation
+library(tidyr, warn.conflicts = FALSE) # handling na
+library(purrr, warn.conflicts = FALSE) # functional programming
+library(listviewer) # view nested list
+library(jsonlite, warn.conflicts = FALSE) # read json file
+library(sf) # handle map object
+```
+
+# Step 1: Data Preparation
+Next step is to load data and transform data for data visualization. We use R packages as follows.
+
+- [`WDI`](https://github.com/vincentarelbundock/WDI) to download **GDP growth** from Worldbank data.
+- [`countrycode`](https://github.com/vincentarelbundock/countrycode) to mapping country names and country codes.
+- [`sf`](https://github.com/r-spatial/sf) to read geojson file and manipulate map object.
+
+```{r}
+#| include: false
+
+df <- readRDS("wdi_gdp_growth.rds")
+```
+
+```{r}
+#| eval: false
+
+df <- WDI(indicator = "NY.GDP.MKTP.KD.ZG", extra = TRUE) |> # GDP growth
+  rename(gdp_growth = NY.GDP.MKTP.KD.ZG) |>
+  as_tibble() |>
+  arrange(year)
+```
+
+```{r}
+df_country <- df |>
+  filter(region != "Aggregates") |>
+  drop_na(gdp_growth) |>
+  left_join(codelist[, c("iso2c", "country.name.en")], by = "iso2c")
+
+df_country
+```
+
+We read world map into two formats
+
+- `sf` object for data manipulation.
+- `geojson` for `echarts` map registration.
+
+```{r}
+url <- "https://raw.githubusercontent.com/piyayut-ch/mapthai/master/data-raw/geojson/world.geojson"
+world_sf <- read_sf(url)
+world_json <- jsonlite::read_json(url)
+
+plot(world_sf["NAME"])
+```
+
+We remove Antarctica from geojson file.
+```{r}
+world_json[["features"]][[173]] <- NULL 
+```
+
+Next, we correct country codes (`ISO_A3`) of `world_sf` object, remove goemtry and save it to `world_df`.
+```{r}
+world_df <- world_sf |>
+  st_drop_geometry() |>
+  mutate(
+    ISO_A3 = case_when(
+      NAME == "France" ~ "FRA",
+      NAME == "Norway" ~ "NOR",
+      NAME == "Kosovo" ~ "XKX",
+      TRUE ~ ISO_A3
+    )
+  )
+```
+
+Lastly, we add country names used by map `geojson`, so when we create a map we can use country name to link between data and map. We do this by joining `df_country` with `world_df` using `iso3c` column from `df_country` table and `ISO_A3` column from `world_df` table.
+```{r}
+df_country <- df_country |>
+  select(iso3c, country, gdp_growth, year) |>
+  left_join(
+    world_df |> select(NAME, ISO_A3),
+    by = c("iso3c" = "ISO_A3")
+  )
+```
+
+
+# Step 2: Initialize an echart with timeline
+We initialize an `echart` with timeline using `echarts4r` and `group_by` and assign to `p` variable. This will create an empty canvas with time slider. Note that we map `NAME` to country (we will refer to `NAME` when create a map).
+
+```{r}
+p <- df_country |>
+  group_by(year) |>
+  e_charts(NAME, timeline = TRUE)
+
+p
+```
+
+
+# Step 3: Make a choropleth map
+Now, we make a choropleth map using `e_map` where we map `gdp_growth` to color intensity. We use custom geojson map, we need to register the map with `e_map_register`. Note that `nameProperty` is important argument because it is a key to link between `echarts` and `geojson` object. `aspectScale` is set to 1 for better map scaling.
+
+```{r}
+p <- p |>
+  e_map_register("World", world_json) |> # register geojson for echart map
+  e_map(
+    gdp_growth,
+    map = "World", # refer to registered map
+    nameProperty = "NAME", # properties for map
+    aspectScale = 1,
+    roam = TRUE, # enable zoom
+    emphasis = list(focus = "self"),
+    select = list(disabled = TRUE)
+  ) |>
+  e_grid(left = "0%", right = "0%", bottom = "5%")
+
+p
+```
+
+
+
+# Step 4: Visual map color to GDP Growth
+As `gdp_growth` can be negative and positive, so we use [diverging colors scheme](https://colorbrewer2.org/#type=diverging&scheme=RdBu&n=5). I use red as negative growth and blue for positive growth. First, I use `e_visual_map` but I found that it automatically compute `min` and `max` for us. So, it is very difficult for implementing diverging color scheme. As a result, I create a modified function called `e_visual_map2_` where it basically turn off `min` and `max` auto-calculation.
+
+
+```{r}
+# define e_visual_map2
+e_visual_map2_ <- function(
+  e, serie = NULL, min, max, calculable = TRUE,
+  type = c("continuous", "piecewise"), scale = NULL, ...)
+{
+    if (missing(e)) {
+        stop("must pass e", call. = FALSE)
+    }
+    if (!length(e$x$opts$visualMap)) {
+        e$x$opts$visualMap <- list()
+    }
+    vm <- list(...)
+    vm$calculable <- calculable
+    vm$type <- type[1]
+    vm$min <- min
+    vm$max <- max
+    if (!e$x$tl) {
+        e$x$opts$visualMap <- append(e$x$opts$visualMap, list(vm))
+    }
+    else {
+        e$x$opts$baseOption$visualMap <- append(e$x$opts$baseOption$visualMap,
+            list(vm))
+    }
+    e
+}
+```
+:::{.callout-note}
+`e_visual_map2_` where `_` means that variables used in the function call must be a character.
+:::
+
+
+Apply `e_visual_map2_`
+```{r}
+p <- p |>
+  e_visual_map2_(
+    "gdp_growth",
+    min = -20,
+    max = 20,
+    calculable = TRUE, # use visual map for filtering data 
+    realtime = TRUE, # hovered country shown in visual map
+    left = "10%", # location
+    bottom = '20%', # location
+    inRange = list(
+      color = list(
+        "#ca0020",
+        "#f4a582",
+        "#f7f7f7",
+        "#92c5de",
+        "#0571b0"
+      )
+    )
+  )
+
+p
+```
+
+# Step 5: Customize time slider and animation
+We can customize behavior and apperance of time slider using `e_timeline_opts` function and we adjust animation effect using `e_animation` function.
+
+```{r}
+p <- p |>
+  e_timeline_opts(
+    axisType = "category",
+    autoPlay = FALSE,
+    orient = "horizontal",
+    playInterval = 500,
+    symbolSize = 8,
+    left = "center",
+    width = "90%",
+    loop = FALSE
+  ) |>
+  e_animation(
+    duration.update = 500,
+    easing.update = "linear"
+  )
+
+p
+```
+
+# Step 6: Add tooltip
+We add information popup when we hover on a map. We can add tooltip information using `e_tooltip` together with `JS` function from `htmlwidgets` package.
+
+```{r}
+p <- p |>
+  e_tooltip(
+    trigger = "item",
+    formatter = htmlwidgets::JS("
+      function(params){
+        return(
+          '<strong>' + params.name + '</strong><br />' +
+          'GDP growth: ' + params.value.toLocaleString(
+            'en-US', {maximumFractionDigits: 2}) + '%'
+        )
+      }
+    ")
+  )
+
+p
+```
+
+# Step 7: Polish the chart
+There are a couple things to improve the chart.
+
+- We will add a chart title.
+- We will annotate each time frame with information about year of the data.
+- We add toolbox for saving image and restore (reset zoom effect) using `e_toolbox_feature`.
+
+Again, We follow the approach from [my previous post](https://piyayut-ch.github.io/piyayut/posts/2022-07-30_echarts_gapminder/) using custom `e_title_timeline` function to assign title for each time frame. We create three lists including
+
+- main title
+- year
+
+```{r}
+e_title_timeline <- function(e, title) {
+  # loop over group_by data
+  for (i in 1:length(e$x$opts$options)) {
+    # append original title with new title
+    e$x$opts$options[[i]][["title"]] <- append(
+      e$x$opts$options[[i]][["title"]], title[i]
+    )
+  }
+  e
+}
+
+# create main title
+title_main <- map(
+  as.character(df_country$year) |> unique(),
+  function(x) {
+    list(
+      text = paste0("GDP Growth (annual %)"),
+      subtext = "(Data Source: World Bank)",
+      left = "center",
+      top = "5%",
+      textStyle = list(fontSize = 20)
+    )
+  }
+)
+
+# create time title for annotation
+title_year <- map(
+  as.character(df_country$year) |> unique(),
+  function(x) {
+    list(
+      text = x,
+      right = "10%",
+      top = "15%",
+      textStyle = list(fontSize = 32)
+    )
+  }
+)
+```
+
+Add titile and toolbox to the chart.
+```{r}
+p <- p |>
+  e_title_timeline(title = title_main) |>
+  e_title_timeline(title = title_year) |>
+  e_toolbox_feature(feature = c("saveAsImage", "restore"))
+
+p
+```
+
+# Put it all together
+
+```{r}
+#| eval: false
+
+# load libraries 
+library(WDI) # gapminder data
+library(countrycode) # for mapping continent
+library(echarts4r) # make echarts using R
+library(sf) # handle map object
+library(jsonlite)library(dplyr, warn.conflicts = FALSE) # data manipulation
+library(tidyr, warn.conflicts = FALSE) # handling na
+library(purrr, warn.conflicts = FALSE) # functional programming
+library(listviewer) # view nested list
+library(jsonlite) # read json file
+
+# data preparation
+df <- WDI(indicator = "NY.GDP.MKTP.KD.ZG", extra = TRUE) |> # GDP growth
+  rename(gdp_growth = NY.GDP.MKTP.KD.ZG) |>
+  as_tibble() |>
+  arrange(year)
+
+df_country <- df |>
+  filter(region != "Aggregates") |>
+  drop_na(gdp_growth) |>
+  left_join(codelist[, c("iso2c", "country.name.en")], by = "iso2c")
+
+url <- "https://raw.githubusercontent.com/piyayut-ch/mapthai/master/data-raw/geojson/world.geojson"
+
+world_json <- read_json(url)
+world_json[["features"]][[173]] <- NULL 
+
+world_sf <- read_sf(url)
+world_df <- world_sf |>
+  st_drop_geometry() |>
+  mutate(
+    ISO_A3 = case_when(
+      NAME == "France" ~ "FRA",
+      NAME == "Norway" ~ "NOR",
+      NAME == "Kosovo" ~ "XKX",
+      TRUE ~ ISO_A3
+    )
+  )
+
+df_country <- df_country |>
+  select(iso3c, country, gdp_growth, year) |>
+  left_join(
+    world_df |> select(NAME, ISO_A3),
+    by = c("iso3c" = "ISO_A3")
+  )
+
+# define helper functions
+e_visual_map2_ <- function(
+  e, serie = NULL, min, max, calculable = TRUE,
+  type = c("continuous", "piecewise"), scale = NULL, ...)
+{
+    if (missing(e)) {
+        stop("must pass e", call. = FALSE)
+    }
+    if (!length(e$x$opts$visualMap)) {
+        e$x$opts$visualMap <- list()
+    }
+    vm <- list(...)
+    vm$calculable <- calculable
+    vm$type <- type[1]
+    vm$min <- min
+    vm$max <- max
+    if (!e$x$tl) {
+        e$x$opts$visualMap <- append(e$x$opts$visualMap, list(vm))
+    }
+    else {
+        e$x$opts$baseOption$visualMap <- append(e$x$opts$baseOption$visualMap,
+            list(vm))
+    }
+    e
+}
+
+e_title_timeline <- function(e, title) {
+  # loop over group_by data
+  for (i in 1:length(e$x$opts$options)) {
+    # append original title with new title
+    e$x$opts$options[[i]][["title"]] <- append(
+      e$x$opts$options[[i]][["title"]], title[i]
+    )
+  }
+  e
+}
+
+# create main title
+title_main <- map(
+  as.character(df_country$year) |> unique(),
+  function(x) {
+    list(
+      text = paste0("GDP Growth (annual %)"),
+      subtext = "(Data Source: World Bank)",
+      left = "center",
+      top = "5%",
+      textStyle = list(fontSize = 20)
+    )
+  }
+)
+
+# create time title for annotation
+title_year <- map(
+  as.character(df_country$year) |> unique(),
+  function(x) {
+    list(
+      text = x,
+      right = "10%",
+      top = "15%",
+      textStyle = list(fontSize = 32)
+    )
+  }
+)
+
+# make a chart
+p <- df_country |>
+  group_by(year) |>
+  e_charts(NAME, timeline = TRUE) |>
+  e_map_register("World", world_json) |> # register geojson for echart map
+  e_map(
+    gdp_growth,
+    map = "World", # refer to registered map
+    nameProperty = "NAME", # properties for map
+    aspectScale = 1,
+    roam = TRUE, # enable zoom
+    emphasis = list(focus = "self"),
+    select = list(disabled = TRUE)
+  ) |>
+  e_grid(left = "0%", right = "0%", bottom = "5%") |>
+  e_visual_map2_(
+    "gdp_growth",
+    min = -20,
+    max = 20,
+    calculable = TRUE, # use visual map for filtering data 
+    realtime = TRUE, # hovered country shown in visual map
+    left = "10%", # location
+    bottom = '20%', # location
+    inRange = list(
+      color = list(
+        "#ca0020",
+        "#f4a582",
+        "#f7f7f7",
+        "#92c5de",
+        "#0571b0"
+      )
+    )
+  )
+  e_timeline_opts(
+    axisType = "category",
+    autoPlay = FALSE,
+    orient = "horizontal",
+    playInterval = 500,
+    symbolSize = 8,
+    left = "center",
+    width = "90%",
+    loop = FALSE
+  ) |>
+  e_animation(
+    duration.update = 500,
+    easing.update = "linear"
+  ) |>
+  e_tooltip(
+    trigger = "item",
+    formatter = htmlwidgets::JS("
+      function(params){
+        return(
+          '<strong>' + params.name + '</strong><br />' +
+          'GDP growth: ' + params.value.toLocaleString(
+            'en-US', {maximumFractionDigits: 2}) + '%'
+        )
+      }
+    ")
+  ) |>
+  e_title_timeline(title = title_main) |>
+  e_title_timeline(title = title_year) |>
+  e_toolbox_feature(feature = c("saveAsImage", "restore"))
+```
+
+```{r}
+p
+```
+
