@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/2022-09-03_echarts_population_pyramid/index.html",
       "/posts/2022-08-13_echarts_chorolpleth/index.html",
       "/posts/2022-08-10_echarts_bar-race/index.html",
       "/posts/2022-07-30_echarts_gapminder/index.html",

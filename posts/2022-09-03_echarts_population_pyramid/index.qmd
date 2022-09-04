@@ -1,0 +1,718 @@
+---
+title: "How to make an animated population pyramid using R and echarts"
+author: "Piyayut Chitchumnong"
+description: | 
+  A walkthrough of how to make an animated population pyramid using R and echarts.
+date: "2022-09-03"
+categories: [tutorial, R, echarts, data-visualization, animation]
+format:
+  html:
+    df-print: tibble
+knitr:
+  opts_chunk:
+    comment: "#>"
+---
+
+![](feature.gif)
+
+# Introduction
+In the previous posts, I show how to make animated charts using `R`, [`echarts`](https://echarts.apache.org/en/index.html) and [`echarts4r`](https://echarts4r.john-coene.com/index.html) package including
+
+- [gapminder chart](https://piyayut-ch.github.io/piyayut/posts/2022-07-30_echarts_gapminder/)
+- [bar-race chart](https://piyayut-ch.github.io/piyayut/posts/2022-08-10_echarts_bar-race/)
+- [choropleth map ](https://piyayut-ch.github.io/piyayut/posts/2022-08-13_echarts_chorolpleth/)
+
+
+In this post, I will show how to make an **animated population pyramid** where we want to show how population structure of Japan has changed overtime. We will see that Thailand has become aging society where government should be prepare for this. 
+
+Let's make the graph.
+
+# Step 0: Load packages
+First, we load required R packages as follows 
+```{r}
+library(WDI) # gapminder data
+library(echarts4r) # make echarts using R
+library(dplyr, warn.conflicts = FALSE) # data manipulation
+library(tidyr, warn.conflicts = FALSE) # handling na
+library(stringr) #string manipulation
+library(purrr, warn.conflicts = FALSE) # functional programming
+```
+
+# Step 1: Data Preparation
+We use `WDI` package to download data from world bank.
+
+```{r}
+#| include: false
+
+df_raw <- readr::read_csv("wdi_population_jp.csv")
+df_raw
+```
+
+First, World Bank data put data in seperated indicator i.e. `SP.POP.0014.FE.5Y` represents Population ages 0-4, female (% of female population) where `SP.POP` means population, `0004` means age span from 0-4, `FE` means female (`MA` = male), `5Y` means 5 years span. Please see this [link](https://data.worldbank.org/indicator/SP.POP.0004.FE.5Y) for example. As we want to get all age spans for both female and female, we construct a list of all indicators. The code used to generate indicators is shown below. Note that `80UP` is for age span that 80 years old and older. 
+```{r}
+age_span <- paste0(
+  begin = seq(0, 80, by = 5) |> str_pad(2, pad = "0"),
+  end = c(seq(4, 79, by = 5) |> str_pad(2, pad = "0"), "UP")
+)
+
+gender <- c("FE", "MA")
+
+indicators <- expand_grid(age_span, gender) |>
+  mutate(indicator = paste0("SP.POP.", age_span, ".", gender, ".5Y")) |>
+  pull(indicator)
+
+indicators
+```
+
+Next, we download data using `WDI` function from `WDI` package.
+
+```{r}
+#| eval: false
+
+df_raw <- WDI(country = "JP", indicator = indicators) |> as_tibble()
+df_raw
+```
+
+The data is in wide format as each indicator has its own column. To make the chart, we need to reshape our data into long format where we have a column indicating gender and another column indicating age span. We use `pivot_longer` and `pivot_wider` from `tidyr` package as follows.
+```{r}
+df <- df_raw |>
+  pivot_longer(-c(1:3)) |>
+  filter(year >= 1980) |>
+  mutate(
+    value = round(value, 2),
+    gender = ifelse(str_detect(name, "FE"), "female", "male"),
+    age_span = case_when(
+      str_detect(name, "0004") ~ "0-4",
+      str_detect(name, "0509") ~ "5-9",
+      str_detect(name, "1014") ~ "10-14",
+      str_detect(name, "1519") ~ "15-19",
+      str_detect(name, "2024") ~ "20-24",
+      str_detect(name, "2529") ~ "25-29",
+      str_detect(name, "3034") ~ "30-34",
+      str_detect(name, "3539") ~ "35-39",
+      str_detect(name, "4044") ~ "40-44",
+      str_detect(name, "4549") ~ "45-49",
+      str_detect(name, "5054") ~ "50-54",
+      str_detect(name, "5559") ~ "55-59",
+      str_detect(name, "6064") ~ "60-64",
+      str_detect(name, "6569") ~ "65-69",
+      str_detect(name, "7074") ~ "70-74",
+      str_detect(name, "7579") ~ "75-79",
+      str_detect(name, "80UP") ~ "80+"
+    )
+  ) |>
+  pivot_wider(
+    c("year", "age_span"),
+    names_from = "gender",
+    values_from = "value"
+  )
+
+df
+```
+
+
+# Step 2: Initialize an echart with timeline
+We initialize an `echart` with timeline using `echarts4r` and `group_by` and assign to `p` variable. This will create an empty canvas with time slider. Note that we fix chart's width and height for full control.
+
+```{r}
+p <- df |>
+  group_by(year) |>
+  e_charts(age_span, timeline = TRUE, width = 700, height = 450)
+
+p
+```
+
+
+# Step 3: Make a bar chart
+Now, we make bar charts using `e_bar` one for female and one for male. We set different `x_index` and `y_index` for each gender as we will later assign them to different grid. We also use `e_flip_coords` to convert vertical bar into horizontal bar.
+
+```{r}
+p <- p |>
+  e_bar(
+    female, x_index = 0, y_index = 0,
+    barWidth = "90%", itemStyle = list(color = "#CC6594")
+  ) |>
+  e_bar(
+    male, x_index = 1, y_index = 1,
+    barWidth = "90%", itemStyle = list(color = "#347DC1")
+  ) |>
+  e_flip_coords()
+
+p
+```
+
+
+# Step 4: Turn the chart into two grids
+Next, we turn our chart canva into two grids using `e_grid` function. We set `width` to 40% for each grid. Where we use 5% for plot margin of each side, and 10% in the middle for age span label.
+```{r}
+p <- p |>
+  e_grid(
+    width = "40%",
+    top = "15%", right = "55%", bottom = "15%"
+  ) |>
+  e_grid(
+    width = "40%",
+    top = "15%", left = "55%", bottom = "15%"
+  ) |>
+  e_legend(show = FALSE)
+
+p
+```
+
+# Step 5: Make a pyramid chart
+We already have two grid, now we can assign our bar charts into specific grid. We modify orginal `e_axis` function to account for timeline chart and call it `e_axis_2` as follows.
+
+```{r}
+e_axis_2 <- function (
+  e, serie = NULL, axis = c("x", "y", "z"), index = 0, 
+  formatter = NULL, margin = 0, ...) 
+{
+    if (missing(e)) {
+        stop("missing e", call. = FALSE)
+    }
+    axis <- echarts4r:::.r2axis(axis[1])
+    r.index <- index + 1
+    #########################################################
+    # we adjust this code chunk to take timeline into account. 
+    if (!e$x$tl) {
+      max <- length(e$x$opts[[axis]])
+    }
+    else {
+      max <- length(e$x$opts$baseOption[[axis]])
+    }
+    # end of code modification
+    #########################################################
+    attrs <- list(...)
+    if (!is.null(serie)) {
+        dat <- .get_data(e, serie)
+        if (inherits(dat, "numeric") || inherits(dat, "integer")) {
+            rng <- range(dat)
+            attrs$min <- rng[1] - margin
+            attrs$max <- rng[2] + margin
+        }
+    }
+    if (!is.null(formatter)) {
+        attrs$axisLabel$formatter <- formatter
+    }
+    if (!length(attrs)) {
+        stop("no attribute", call. = FALSE)
+    }
+    if (r.index > max) {
+        r.index <- 1
+    }
+    if (!e$x$tl) {
+        dp <- echarts4r:::.list_depth(e$x$opts[[axis]])
+    }
+    else {
+        dp <- echarts4r:::.list_depth(e$x$opts$baseOption[[axis]])
+    }
+    if (dp >= 2) {
+        for (i in seq_along(attrs)) {
+            arg <- names(attrs)[i]
+            if (!e$x$tl) {
+                e$x$opts[[axis]][[r.index]][[arg]] <- attrs[[i]]
+            }
+            else {
+                e$x$opts$baseOption[[axis]][[r.index]][[arg]] <- attrs[[i]]
+            }
+        }
+    }
+    else {
+        for (i in seq_along(attrs)) {
+            arg <- names(attrs)[i]
+            if (!e$x$tl) {
+                e$x$opts[[axis]][[arg]] <- attrs[[i]]
+            }
+            else {
+                e$x$opts$baseOption[[axis]][[arg]] <- attrs[[i]]
+            }
+        }
+    }
+  e
+}
+```
+
+We then apply `e_axis_2` to assign `index = 0` to `gridIndex = 0` and `index = 1` to `gridIndex = 1`. Note that index we assign when we construct bar chart using `e_bar` in step 3. We inverse x axis of index 0 to make a bar chart goes from right to left. Another note is about `axisLabel` we vertical and horizontal align and we set margin = 35 which is half of 10% of chart's width (700px).
+```{r}
+p <- p |>
+  e_axis_2(
+    axis = "x", index = 0, gridIndex = 0,
+    show = TRUE, inverse = TRUE,
+    min = 0, max = 15
+  ) |>
+  e_axis_2(
+    axis = "x", index = 1, gridIndex = 1,
+    show = TRUE, inverse = FALSE,
+    min = 0, max = 15
+  ) |>
+  e_axis_2(
+    axis = "y", index = 0, gridIndex = 0,
+    show = TRUE,
+    axisTick = list(show = TRUE, inside = TRUE),
+    axisLabel = list(show = FALSE)
+  ) |>
+  e_axis_2(
+    axis = "y", index = 1, gridIndex = 1,
+    show = TRUE,
+    axisTick = list(show = TRUE),
+    axisLabel = list(
+      align = "center", verticalAlign = "center", margin = 35
+    )
+  )
+
+p
+```
+
+
+# Step 6: Customize time slider and animation
+We customize behavior and apperance of time slider using `e_timeline_opts` function and we adjust animation effect using `e_animation` function.
+
+```{r}
+p <- p |>
+  e_timeline_opts(
+    axisType = "category",
+    autoPlay = FALSE,
+    orient = "horizontal",
+    playInterval = 400,
+    symbolSize = 8,
+    label = list(interval = 4),
+    left = "center",
+    width = "90%",
+    loop = FALSE
+  ) |>
+  e_animation(
+    duration.update = 400,
+    easing.update = "linear"
+  )
+
+p
+```
+
+
+# Step 7: Add tooltip
+We add information popup when we hover on each bar. We can add tooltip information using `e_tooltip` together with `JS` function from `htmlwidgets` package.
+
+```{r}
+p <- p |>
+  e_tooltip(
+    trigger = "item",
+    formatter = htmlwidgets::JS("
+      function(params){
+        return(
+          '<strong>' + 'Age: ' + '</strong>' + params.name + ' years' + '<br />' +
+          '<strong>' + 'Share: ' + '</strong>' + params.value[0].toLocaleString(
+            'en-US', {maximumFractionDigits: 2}) + '%'
+        )
+      }
+    ")
+  )
+
+p
+```
+
+
+# Step 8: Polish the chart
+There are a couple things to improve the chart.
+
+- We will add a chart title.
+- We will annotate each time frame with information about year of the data.
+- We add toolbox for saving image using `e_toolbox_feature`.
+- We add female and male icons for innotation purpose.
+
+**Text Annotation**
+Again, We follow the approach from [my previous post](https://piyayut-ch.github.io/piyayut/posts/2022-07-30_echarts_gapminder/) using custom `e_title_timeline` function to assign title for each time frame. We create three lists including
+
+- main title
+- year
+
+```{r}
+# create e_title_timeline 
+e_title_timeline <- function(e, title) {
+  # loop over group_by data
+  for (i in 1:length(e$x$opts$options)) {
+    # append original title with new title
+    e$x$opts$options[[i]][["title"]] <- append(
+      e$x$opts$options[[i]][["title"]], title[i]
+    )
+  }
+  e
+}
+
+# create a list of years
+list_year <- as.character(df$year) |> unique()
+
+# create main title
+title_main <- map(
+  list_year,
+  function(x) {
+    list(
+      text = paste0("Population by Age and Gender"),
+      subtext = "(Data Source: World Bank)",
+      left = "center",
+      top = "0%",
+      textStyle = list(fontSize = 20)
+    )
+  }
+)
+
+# create time title for annotation
+title_year <- map(
+  list_year,
+  function(x) {
+    list(
+      text = x,
+      right = "7%",
+      top = "70%",
+      textStyle = list(fontSize = 32)
+    )
+  }
+)
+```
+
+**Icon Annotation**
+```{r}
+e_graphic_elem <- function (e, elem, ...)
+{
+    opts <- list(type = elem, ...)    
+    if (!e$x$tl) {
+      e$x$opts$graphic <- list(e$x$opts$graphic, opts)
+    }
+    else {
+      if(length(e$x$opts$baseOption$graphic) == 0){
+        e$x$opts$baseOption$graphic <- list(opts)
+      } else {
+        e$x$opts$baseOption$graphic <- append(
+          e$x$opts$baseOption$graphic,
+          list(opts)
+        )
+      }
+    }
+    e
+}
+```
+
+Finally, we add titile, toolbox and icons to the chart.
+```{r}
+p <- p |>
+  e_title_timeline(title = title_main) |>
+  e_title_timeline(title = title_year) |>
+  e_toolbox_feature(feature = c("saveAsImage")) |>
+  e_graphic_elem(
+    elem = "image",
+    id = "female",
+    left = "7%",
+    top = "15%",
+    z = -999,
+    style = list(
+      image = "https://github.com/piyayut-ch/piyayut/raw/main/assets/images/female_pink.png",
+      height = 60
+    )
+  ) |>
+  e_graphic_elem(
+    elem = "image",
+    id = "male",
+    right = "7%",
+    top = "15%",
+    z = -999,
+    style = list(
+      image = "https://github.com/piyayut-ch/piyayut/raw/main/assets/images/male_blue.png",
+      height = 60
+    )
+  )
+
+p
+```
+
+
+# Put it all together
+
+```{r}
+#| eval: false
+
+# load libraries
+library(WDI) # gapminder data
+library(echarts4r) # make echarts using R
+library(dplyr, warn.conflicts = FALSE) # data manipulation
+library(tidyr, warn.conflicts = FALSE) # handling na
+library(stringr) #string manipulation
+library(purrr, warn.conflicts = FALSE) # functional programming
+
+# data preparation
+age_span <- paste0(
+  begin = seq(0, 80, by = 5) |> str_pad(2, pad = "0"),
+  end = c(seq(4, 79, by = 5) |> str_pad(2, pad = "0"), "UP")
+)
+
+gender <- c("FE", "MA")
+
+indicators <- expand_grid(age_span, gender) |>
+  mutate(indicator = paste0("SP.POP.", age_span, ".", gender, ".5Y")) |>
+  pull(indicator)
+
+df_raw <- WDI(country = "JP", indicator = indicators) |> as_tibble()
+
+df <- df_raw |>
+  pivot_longer(-c(1:3)) |>
+  filter(year >= 1980) |>
+  mutate(
+    value = round(value, 2),
+    gender = ifelse(str_detect(name, "FE"), "female", "male"),
+    age_span = case_when(
+      str_detect(name, "0004") ~ "0-4",
+      str_detect(name, "0509") ~ "5-9",
+      str_detect(name, "1014") ~ "10-14",
+      str_detect(name, "1519") ~ "15-19",
+      str_detect(name, "2024") ~ "20-24",
+      str_detect(name, "2529") ~ "25-29",
+      str_detect(name, "3034") ~ "30-34",
+      str_detect(name, "3539") ~ "35-39",
+      str_detect(name, "4044") ~ "40-44",
+      str_detect(name, "4549") ~ "45-49",
+      str_detect(name, "5054") ~ "50-54",
+      str_detect(name, "5559") ~ "55-59",
+      str_detect(name, "6064") ~ "60-64",
+      str_detect(name, "6569") ~ "65-69",
+      str_detect(name, "7074") ~ "70-74",
+      str_detect(name, "7579") ~ "75-79",
+      str_detect(name, "80UP") ~ "80+"
+    )
+  ) |>
+  pivot_wider(
+    c("year", "age_span"),
+    names_from = "gender",
+    values_from = "value"
+  )
+
+# define helper functions
+# e_axis_2: assign axis to a grid
+e_axis_2 <- function (
+  e, serie = NULL, axis = c("x", "y", "z"), index = 0, 
+  formatter = NULL, margin = 0, ...) 
+{
+    if (missing(e)) {
+        stop("missing e", call. = FALSE)
+    }
+    axis <- echarts4r:::.r2axis(axis[1])
+    r.index <- index + 1
+    #########################################################
+    # we adjust this code chunk to take timeline into account. 
+    if (!e$x$tl) {
+      max <- length(e$x$opts[[axis]])
+    }
+    else {
+      max <- length(e$x$opts$baseOption[[axis]])
+    }
+    # end of code modification
+    #########################################################
+    attrs <- list(...)
+    if (!is.null(serie)) {
+        dat <- .get_data(e, serie)
+        if (inherits(dat, "numeric") || inherits(dat, "integer")) {
+            rng <- range(dat)
+            attrs$min <- rng[1] - margin
+            attrs$max <- rng[2] + margin
+        }
+    }
+    if (!is.null(formatter)) {
+        attrs$axisLabel$formatter <- formatter
+    }
+    if (!length(attrs)) {
+        stop("no attribute", call. = FALSE)
+    }
+    if (r.index > max) {
+        r.index <- 1
+    }
+    if (!e$x$tl) {
+        dp <- echarts4r:::.list_depth(e$x$opts[[axis]])
+    }
+    else {
+        dp <- echarts4r:::.list_depth(e$x$opts$baseOption[[axis]])
+    }
+    if (dp >= 2) {
+        for (i in seq_along(attrs)) {
+            arg <- names(attrs)[i]
+            if (!e$x$tl) {
+                e$x$opts[[axis]][[r.index]][[arg]] <- attrs[[i]]
+            }
+            else {
+                e$x$opts$baseOption[[axis]][[r.index]][[arg]] <- attrs[[i]]
+            }
+        }
+    }
+    else {
+        for (i in seq_along(attrs)) {
+            arg <- names(attrs)[i]
+            if (!e$x$tl) {
+                e$x$opts[[axis]][[arg]] <- attrs[[i]]
+            }
+            else {
+                e$x$opts$baseOption[[axis]][[arg]] <- attrs[[i]]
+            }
+        }
+    }
+  e
+}
+
+# create e_title_timeline 
+e_title_timeline <- function(e, title) {
+  for (i in 1:length(e$x$opts$options)) {
+    e$x$opts$options[[i]][["title"]] <- append(
+      e$x$opts$options[[i]][["title"]], title[i]
+    )
+  }
+  e
+}
+
+# create a list of years
+list_year <- as.character(df$year) |> unique()
+
+# create main title
+title_main <- map(
+  list_year,
+  function(x) {
+    list(
+      text = paste0("Population by Age and Gender"),
+      subtext = "(Data Source: World Bank)",
+      left = "center",
+      top = "0%",
+      textStyle = list(fontSize = 20)
+    )
+  }
+)
+
+# create time title for annotation
+title_year <- map(
+  list_year,
+  function(x) {
+    list(
+      text = x,
+      right = "7%",
+      top = "70%",
+      textStyle = list(fontSize = 32)
+    )
+  }
+)
+
+# add icon to the chart
+e_graphic_elem <- function (e, elem, ...)
+{
+    opts <- list(type = elem, ...)    
+    if (!e$x$tl) {
+      e$x$opts$graphic <- list(e$x$opts$graphic, opts)
+    }
+    else {
+      if(length(e$x$opts$baseOption$graphic) == 0){
+        e$x$opts$baseOption$graphic <- list(opts)
+      } else {
+        e$x$opts$baseOption$graphic <- append(
+          e$x$opts$baseOption$graphic,
+          list(opts)
+        )
+      }
+    }
+    e
+}
+
+# make a plot
+p <- df |>
+  group_by(year) |>
+  e_charts(age_span, timeline = TRUE, width = 700, height = 450) |>
+  e_bar(
+    female, x_index = 0, y_index = 0,
+    barWidth = "90%", itemStyle = list(color = "#CC6594")
+  ) |>
+  e_bar(
+    male, x_index = 1, y_index = 1,
+    barWidth = "90%", itemStyle = list(color = "#347DC1")
+  ) |>
+  e_flip_coords() |>
+  e_grid(
+    width = "40%",
+    top = "15%", right = "55%", bottom = "15%"
+  ) |>
+  e_grid(
+    width = "40%",
+    top = "15%", left = "55%", bottom = "15%"
+  ) |>
+  e_legend(show = FALSE) |>
+  e_axis_2(
+    axis = "x", index = 0, gridIndex = 0,
+    show = TRUE, inverse = TRUE,
+    min = 0, max = 15
+  ) |>
+  e_axis_2(
+    axis = "x", index = 1, gridIndex = 1,
+    show = TRUE, inverse = FALSE,
+    min = 0, max = 15
+  ) |>
+  e_axis_2(
+    axis = "y", index = 0, gridIndex = 0,
+    show = TRUE,
+    axisTick = list(show = TRUE, inside = TRUE),
+    axisLabel = list(show = FALSE)
+  ) |>
+  e_axis_2(
+    axis = "y", index = 1, gridIndex = 1,
+    show = TRUE,
+    axisTick = list(show = TRUE),
+    axisLabel = list(
+      align = "center", verticalAlign = "center", margin = 35
+    )
+  ) |>
+  e_timeline_opts(
+    axisType = "category",
+    autoPlay = FALSE,
+    orient = "horizontal",
+    playInterval = 400,
+    symbolSize = 8,
+    label = list(interval = 4),
+    left = "center",
+    width = "90%",
+    loop = FALSE
+  ) |>
+  e_animation(
+    duration.update = 400,
+    easing.update = "linear"
+  ) |>
+  e_tooltip(
+    trigger = "item",
+    formatter = htmlwidgets::JS("
+      function(params){
+        return(
+          '<strong>' + 'Age: ' + '</strong>' + params.name + ' years' + '<br />' +
+          '<strong>' + 'Share: ' + '</strong>' + params.value[0].toLocaleString(
+            'en-US', {maximumFractionDigits: 2}) + '%'
+        )
+      }
+    ")
+  ) |>
+  e_title_timeline(title = title_main) |>
+  e_title_timeline(title = title_year) |>
+  e_toolbox_feature(feature = c("saveAsImage")) |>
+  e_graphic_elem(
+    elem = "image",
+    id = "female",
+    left = "7%",
+    top = "15%",
+    z = -999,
+    style = list(
+      image = "https://github.com/piyayut-ch/piyayut/raw/main/assets/images/female_pink.png",
+      height = 60
+    )
+  ) |>
+  e_graphic_elem(
+    elem = "image",
+    id = "male",
+    right = "7%",
+    top = "15%",
+    z = -999,
+    style = list(
+      image = "https://github.com/piyayut-ch/piyayut/raw/main/assets/images/male_blue.png",
+      height = 60
+    )
+  )
+```
+
+```{r}
+p
+```
