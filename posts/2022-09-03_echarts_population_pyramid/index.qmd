@@ -346,7 +346,7 @@ title_main <- map(
   list_year,
   function(x) {
     list(
-      text = paste0("Population by Age and Gender"),
+      text = paste0("Japan Population by Age and Gender"),
       subtext = "(Data Source: World Bank)",
       left = "center",
       top = "0%",
@@ -417,6 +417,17 @@ p <- p |>
     style = list(
       image = "https://github.com/piyayut-ch/piyayut/raw/main/assets/images/male_blue.png",
       height = 60
+    )
+  ) |>
+  e_graphic_elem(
+    elem = "image",
+    id = "flag",
+    left = "10%",
+    top = "1%",
+    z = -999,
+    style = list(
+      image = "https://upload.wikimedia.org/wikipedia/commons/b/bc/Flag_of_Japan%28bordered%29.svg",
+      height = 40
     )
   )
 
@@ -571,7 +582,7 @@ title_main <- map(
   list_year,
   function(x) {
     list(
-      text = paste0("Population by Age and Gender"),
+      text = paste0("Japan Population by Age and Gender"),
       subtext = "(Data Source: World Bank)",
       left = "center",
       top = "0%",
@@ -709,6 +720,17 @@ p <- df |>
     style = list(
       image = "https://github.com/piyayut-ch/piyayut/raw/main/assets/images/male_blue.png",
       height = 60
+    )
+  ) |>
+  e_graphic_elem(
+    elem = "image",
+    id = "flag",
+    left = "10%",
+    top = "1%",
+    z = -999,
+    style = list(
+      image = "https://upload.wikimedia.org/wikipedia/commons/b/bc/Flag_of_Japan%28bordered%29.svg",
+      height = 40
     )
   )
 ```
